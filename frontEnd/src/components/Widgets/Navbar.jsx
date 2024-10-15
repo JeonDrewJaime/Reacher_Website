@@ -17,13 +17,19 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import Button from '@mui/material/Button';
+
+import FAQsIcon from '@mui/icons-material/QuestionAnswer';
+import AboutIcon from '@mui/icons-material/Info';
+import LoginIcon from '@mui/icons-material/Login';
 import HomeIcon from '@mui/icons-material/Home';
+
+
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Home from '../../pages/Home'
-import About from '../../pages/Login'; // Import other components/pages
+import Home from '../../pages/Home';
+import Faqs from '../../pages/Faqs';
+import About from '../../pages/About';
+import Login from '../../pages/Login'; 
 
 const drawerWidth = 240;
 
@@ -74,15 +80,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 // Mapping for icons
 const iconMapping = {
   Home: <HomeIcon />,
-  About: <MailIcon />,
-  FAQs: <InboxIcon />,
-  Login: <MailIcon />,
+  About: <AboutIcon />,
+  FAQs: <FAQsIcon />,
+  Login: <LoginIcon />,
 };
 
 export default function Navbar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if screen size is mobile
+  const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Check if screen size is mobile
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -112,15 +118,16 @@ export default function Navbar() {
             )}
 
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-              Persistent drawer
+              Marychild Academy
             </Typography>
 
             {/* Conditionally hide buttons based on isMobile */}
             {!isMobile && (
               <>
-                <Button color="inherit" component={Link} to="/">Home</Button>
+                <Button color="inherit" component={Link} to="/home">Home</Button>
                 <Button color="inherit" component={Link} to="/about">About</Button>
-                <Button color="inherit" component={Link} to="/contact">Contact</Button>
+                <Button color="inherit" component={Link} to="/FAQs">FAQs</Button>
+                <Button color="inherit" component={Link} to="/Login">Login</Button>
               </>
             )}
           </Toolbar>
@@ -164,10 +171,10 @@ export default function Navbar() {
 
           {/* Routes for dynamic content */}
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/faqs" element={<div>FAQs Content</div>} />
-            <Route path="/login" element={<div>Login Page</div>} />
+            <Route path="/faqs" element={<Faqs />} />
+            <Route path="/login" element={<Login />} />   
           </Routes>
         </Main>
       </Box>
