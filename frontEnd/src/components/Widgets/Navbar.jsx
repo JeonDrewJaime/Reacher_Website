@@ -118,7 +118,7 @@ export default function Navbar() {
             )}
 
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-              Marychild Academy
+              <img src = "../../assets/baby"/>
             </Typography>
 
             {/* Conditionally hide buttons based on isMobile */}
