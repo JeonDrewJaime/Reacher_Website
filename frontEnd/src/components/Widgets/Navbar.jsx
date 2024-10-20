@@ -41,8 +41,8 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: sans-serif;
-  }
-`;
+  }`
+;
 
 const drawerWidth = 240;
 
