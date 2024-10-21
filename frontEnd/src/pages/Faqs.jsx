@@ -5,8 +5,26 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Fade from '@mui/material/Fade';
+import skybowImage from '../assets/skybow.png';
 
 function Faqs() {
+  const divStyle = {
+    backgroundImage: `url(${skybowImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    height: 'calc(100vh - 64px)', // Adjusted to account for the header
+    width: '100%',
+    margin: 0,
+    padding: 0,
+    overflowX: 'hidden',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start', // Changed to flex-start to align items at the top
+  };
+
   const [expanded, setExpanded] = React.useState(false);
 
   const faqs = [
@@ -56,39 +74,89 @@ function Faqs() {
     setExpanded(expanded === index ? false : index);
   };
 
-  return (
-    <div className="faq-container">
-      <h2>Frequently Asked Questions</h2>
-      <br />
+  // Inline styles for container and accordion elements
+  const containerStyle = {
+    maxWidth: '80%',
+    margin: '0 auto',
+    padding: '0 20px',
+    paddingTop: '20px', // Add top padding for space from header
+    '@media (max-width: 600px)': { // Media query for mobile screens
+      maxWidth: '95%',
+      padding: '0 10px',
+      paddingTop: '80px', // Add more space for mobile header
+    },
+  };
 
-      {faqs.map((faq, index) => (
-        <Accordion
-          key={index}
-          expanded={expanded === index}
-          onChange={() => handleExpansion(index)}
-          TransitionComponent={Fade}
-          TransitionProps={{ timeout: 400 }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`panel${index}-content`}
-            id={`panel${index}-header`}
+  const accordionStyle = (isExpanded) => ({
+    width: '100%',
+    boxShadow: 'none',
+    height: isExpanded ? 'auto' : '60px',
+    overflow: 'hidden',
+    transition: 'height 0.4s ease',
+  });
+
+  const summaryStyle = {
+    fontSize: '1rem',
+    color: 'var(--blk)',
+    borderBottom: '1px solid var(--gray)',
+    paddingBottom: '15px',
+    width: '100%',
+    '@media (max-width: 600px)': { // Media query for mobile screens
+      fontSize: '0.9rem',
+    },
+  };
+
+  const answerStyle = {
+    fontSize: '1rem',
+    color: 'var(--gray)',
+    '@media (max-width: 600px)': { // Media query for mobile screens
+      fontSize: '0.9rem',
+    },
+  };
+
+  return (
+    <div style={divStyle}>
+      <div style={containerStyle}>
+        <h2 style={{ marginBottom: '5px', marginTop: '5px' }}>Frequently Asked Questions</h2>
+        <p style={{ marginBottom: '20px', textAlign: 'justify' }}>
+          Welcome to our Frequently Asked Questions section. 
+          Here, you'll find answers to the most common inquiries related to our platform. 
+          From account access issues to password recovery steps, 
+          this page aims to assist you in resolving any problems you may encounter. 
+          If you have further questions, feel free to reach out to our support team for personalized assistance.
+        </p>
+
+        {faqs.map((faq, index) => (
+          <Accordion
+            key={index}
+            expanded={expanded === index}
+            onChange={() => handleExpansion(index)}
+            TransitionComponent={Fade}
+            TransitionProps={{ timeout: 400 }}
+            style={accordionStyle(expanded === index)} 
           >
-            <Typography className="faq-question">
-              <i className='bx bx-right-arrow-alt'></i> {faq.question}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails className="faq-answer">
-            <Typography>{faq.answer}</Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon sx={{ color: 'var(--sec)', fontSize: '1.5rem' }} />}
+              aria-controls={`panel${index}-content`}
+              id={`panel${index}-header`}
+            >
+              <Typography style={summaryStyle}>
+                <i className='bx bx-right-arrow-alt'></i> {faq.question}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography style={answerStyle}>{faq.answer}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </div>
     </div>
   );
 }
 
-
 export default Faqs;
+
+
 
 
 

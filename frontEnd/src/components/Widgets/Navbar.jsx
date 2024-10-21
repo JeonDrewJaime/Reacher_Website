@@ -25,30 +25,16 @@ import logo from '/src/assets/mcalogo.png';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Home from '../../pages/Home';
 import Faqs from '../../pages/Faqs';
-import About from '../../pages/About'; 
-import { createGlobalStyle } from 'styled-components';
-import OneTrickPonyFont from '../../assets/fonts/OneTrickPony.ttf';
+import About from '../../pages/About';
 import Button from '@mui/material/Button';
 import Login from '../../pages/Login';
-
-const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: 'OneTrickPony';
-    src: url(${OneTrickPonyFont}) format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  body {
-    font-family: sans-serif;
-  }`
-;
+import GlobalStyles from '../../GlobalStyles';
 
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: 0,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -89,10 +75,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const iconMapping = {
-  Home: <HomeIcon />,
-  About: <AboutIcon />,
-  FAQs: <FAQsIcon />,
-  Login: <LoginIcon />,
+  '/home': <HomeIcon />,
+  '/about': <AboutIcon />,
+  '/faqs': <FAQsIcon />,
+  '/login': <LoginIcon />,
 };
 
 export default function Navbar() {
@@ -111,10 +97,14 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
+  const handleLinkClick = () => {
+    if (isMobile) handleDrawerClose();
+  };
+
   return (
     <>
       <GlobalStyles />
-      <Box sx={{ display: 'flex', }}>
+      <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="fixed" open={open} sx={{ backgroundColor: 'white', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)' }}>
           <Toolbar>
@@ -124,7 +114,7 @@ export default function Navbar() {
                 aria-label="open drawer"
                 onClick={handleDrawerOpen}
                 edge="start"
-                sx={{ mr: 2, color: 'black', ...(open && { display: 'none' }) }}
+                sx={{ mr: 2, color: 'var(--blk)', ...(open && { display: 'none' }) }}
               >
                 <MenuIcon />
               </IconButton>
@@ -136,7 +126,7 @@ export default function Navbar() {
               sx={{
                 flexGrow: 1,
                 fontFamily: 'OneTrickPony, sans-serif',
-                fontSize: '2.3rem',
+                fontSize: '2rem',
                 color: '#FE81B9',
               }}
             >
@@ -145,18 +135,14 @@ export default function Navbar() {
             </Typography>
 
             {!isMobile && (
-    <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'flex-start', 
-        minHeight: '40px', 
-    }}>
-        {['/home', '/about', '/faqs'].map((path) => (
-            <ListItem key={path} disablePadding>
-                <ListItemButton
-                    component={Link}
-                    to={path}
-                    sx={{
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', minHeight: '40px' }}>
+                {['/home', '/about', '/faqs'].map((path) => (
+                  <ListItem key={path} disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      to={path}
+                      onClick={handleLinkClick}
+                      sx={{
                         color: isActive(path) ? '#45b6d4' : 'black',
                         backgroundColor: 'transparent',
                         fontFamily: 'sans-serif',
@@ -165,74 +151,75 @@ export default function Navbar() {
                         transition: 'all 0.3s ease',
                         padding: { md: '20px 22px', lg: '20px 22px' },
                         fontSize: { md: '14px', lg: '15px' },
+                        fontWeight: '500',
                         '&:hover': {
-                            '&::after': {
-                                content: '""',
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                height: '4px',
-                                backgroundColor: '#45b6d4',
-                                transform: 'scaleX(1)',
-                                transition: 'transform 0.3s ease',
-                            },
-                            transform: 'translateY(-2px)',
-                        },
-                        '&::after': {
+                          '&::after': {
                             content: '""',
                             position: 'absolute',
                             left: 0,
                             right: 0,
                             bottom: 0,
                             height: '4px',
-                            backgroundColor: 'transparent',
-                            transform: 'scaleX(0)',
+                            backgroundColor: '#45b6d4',
+                            transform: 'scaleX(1)',
                             transition: 'transform 0.3s ease',
+                          },
+                          transform: 'translateY(-2px)',
                         },
-                    }}
+                        '&::after': {
+                          content: '""',
+                          position: 'absolute',
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          height: '4px',
+                          backgroundColor: 'transparent',
+                          transform: 'scaleX(0)',
+                          transition: 'transform 0.3s ease',
+                        },
+                      }}
+                    >
+                      {path === '/home' ? 'HOME' : path === '/about' ? 'ABOUT' : 'FAQs'}
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+
+                <Button
+                  sx={{
+                    outline: 'none',
+                    border: '1px solid transparent',
+                    backgroundColor: '#45b6d4',
+                    color: '#FFFFFF',
+                    fontFamily: 'sans-serif',
+                    transition: 'all 0.3s ease',
+                    marginLeft: '15px',
+                    padding: {
+                      xs: '6px 12px',
+                      sm: '8px 14px',
+                      md: '8px 20px',
+                      lg: '8px 40px',
+                    },
+                    fontSize: {
+                      xs: '10px',
+                      sm: '11px',
+                      md: '12px',
+                      lg: '15px',
+                    },
+                    fontWeight: '500',
+                    '&:hover': {
+                      backgroundColor: '#FE81B9',
+                      color: '#FFFFFF',
+                      border: '1px solid #FE81B9',
+                    },
+                  }}
+                  component={Link}
+                  to="/login"
+                  onClick={handleLinkClick}
                 >
-                    {path === '/home' ? 'Home' : path === '/about' ? 'About' : 'FAQs'}
-                </ListItemButton>
-            </ListItem>
-        ))}
-
-        <Button
-            sx={{
-                outline: 'none',
-                border: '1px solid transparent', 
-                backgroundColor: '#45b6d4', 
-                color: '#FFFFFF',
-                fontFamily: 'sans-serif',
-                transition: 'all 0.3s ease',
-                marginLeft: '15px',
-                padding: {
-                    xs: '6px 12px', 
-                    sm: '8px 14px', 
-                    md: '8px 20px', 
-                    lg: '8px 40px', 
-                },
-                fontSize: {
-                    xs: '10px',
-                    sm: '11px', 
-                    md: '12px', 
-                    lg: '15px', 
-                },
-                '&:hover': {
-                    backgroundColor: '#FE81B9', 
-                    color: '#FFFFFF', 
-                    border: '1px solid #FE81B9', 
-                },
-            }}
-            component={Link}
-            to="/login"
-        >
-            Login
-        </Button>
-    </Box>
-)}
-
-       
+                  Login
+                </Button>
+              </Box>
+            )}
           </Toolbar>
         </AppBar>
 
@@ -256,11 +243,18 @@ export default function Navbar() {
           </DrawerHeader>
           <Divider />
           <List>
-            {['Home', 'About', 'FAQs', 'Login'].map((text) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton component={Link} to={`/${text.toLowerCase()}`}>
-                  <ListItemIcon>{iconMapping[text]}</ListItemIcon>
-                  <ListItemText primary={text} />
+            {['/home', '/about', '/faqs', '/login'].map((path) => (
+              <ListItem key={path} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to={path}
+                  onClick={handleLinkClick}
+                  sx={{ color: isActive(path) ? '#45b6d4' : 'black' }}
+                >
+                  <ListItemIcon>
+                    {iconMapping[path]} 
+                  </ListItemIcon>
+                  <ListItemText primary={path.substring(1).toUpperCase()} />
                 </ListItemButton>
               </ListItem>
             ))}
@@ -269,16 +263,15 @@ export default function Navbar() {
 
         <Main open={open}>
           <DrawerHeader />
-         
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/faqs" element={<Faqs />} />
             <Route path="/login" element={<Login />} />
           </Routes>
+          
         </Main>
       </Box>
     </>
   );
 }
-
