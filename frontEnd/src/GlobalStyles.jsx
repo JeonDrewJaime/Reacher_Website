@@ -28,7 +28,7 @@ const GlobalStyles = createGlobalStyle`
     color: var(--text-color); 
     background-color: var(--white); 
     margin: 0;
-    overflow: hidden;
+  
   }
 
   h1, h2, h3, h4, h5, h6 {
