@@ -9,7 +9,7 @@ function Footer() {
         padding: '20px 0', 
         textAlign: 'center',
         width: '100%',
-      
+        
       }}
     >
       <Typography variant="body1" sx={{ margin: 0, color: 'var(--wht)' }}>
