@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, Divider } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import GlobalStyles from '../GlobalStyles';
 import OneTrickPonyFont from '../assets/fonts/OneTrickPony.ttf'; // Import the font
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import the AOS styles
 
 const About = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1200, // You can customize the duration of animations
+    });
+    AOS.refresh(); // Refresh animations on component load
+  }, []);
+
   return (
     <div style={{ padding: '20px' }}>
       <GlobalStyles /> {/* Apply global styles */}
@@ -27,7 +36,7 @@ const About = () => {
         variant="h1"
         align="center"
         sx={{ marginBottom: '20px', fontFamily: 'OneTrickPony', fontWeight: 'normal', color: 'var(--sec)' }}
-      >
+        data-aos="fade-up" >
         About Us
       </Typography>
 
@@ -39,9 +48,10 @@ const About = () => {
           flexDirection: { xs: 'column', md: 'row' },
           marginBottom: '40px',
           padding: '20px',
+          
         }}
       >
-        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center' }}>
+        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center' }} data-aos="fade-up" data-aos-anchor-placement="top-center">
           <Typography
             variant="h2"
             sx={{ marginBottom: '10px', fontFamily: 'OneTrickPony', fontWeight: 'normal', color: 'var(--sec)' }}
@@ -50,17 +60,13 @@ const About = () => {
           </Typography>
           <Typography sx={{ color: 'var(--gray)', fontFamily: 'sans-serif' }}>
             We will carry out our mission with a commitment to create a community of lifelong,
-            successful learners. Successful learners will be able to access information through
-            appropriate use of written, oral, and technological resources. All pupils will
-            demonstrate proficiency according to national standards. They will be prepared to
-            apply their knowledge in order to function independently and contribute to our
-            global society.
+            successful learners...
           </Typography>
         </Box>
 
         <Divider orientation="vertical" flexItem sx={{ borderColor: 'var(--sec)', margin: '0 20px' }} />
 
-        <Box sx={{ flex: 1, paddingLeft: '20px', textAlign: 'center' }}>
+        <Box sx={{ flex: 1, paddingLeft: '20px', textAlign: 'center' }} data-aos="fade-up">
           <Typography
             variant="h2"
             sx={{ marginBottom: '10px', fontFamily: 'OneTrickPony', fontWeight: 'normal', color: 'var(--sec)' }}
@@ -69,10 +75,7 @@ const About = () => {
           </Typography>
           <Typography sx={{ color: 'var(--gray)', fontFamily: 'sans-serif' }}>
             Marychild Academy strives to meet the academic, social, and emotional needs of every
-            pupil to prepare him or her for success in a rapidly changing world. The school,
-            parents, and community work in partnership to develop in each pupil academic
-            excellence, social responsibility, and personal integrity. All stakeholders are
-            committed to the implementation of National Grade Level Standards.
+            pupil to prepare him or her for success in a rapidly changing world...
           </Typography>
         </Box>
       </Box>
@@ -124,8 +127,3 @@ const About = () => {
 };
 
 export default About;
-
-
-
-
-
