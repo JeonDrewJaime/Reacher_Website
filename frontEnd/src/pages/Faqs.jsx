@@ -79,11 +79,11 @@ function Faqs() {
     maxWidth: '80%',
     margin: '0 auto',
     padding: '0 20px',
-    paddingTop: '20px', // Add top padding for space from header
-    '@media (max-width: 600px)': { // Media query for mobile screens
+    paddingTop: '20px', 
+    '@media (max-width: 600px)': { 
       maxWidth: '95%',
       padding: '0 10px',
-      paddingTop: '80px', // Add more space for mobile header
+      paddingTop: '80px', 
     },
   };
 
@@ -101,7 +101,7 @@ function Faqs() {
     borderBottom: '1px solid var(--gray)',
     paddingBottom: '15px',
     width: '100%',
-    '@media (max-width: 600px)': { // Media query for mobile screens
+    '@media (max-width: 600px)': { 
       fontSize: '0.9rem',
     },
   };
@@ -109,7 +109,7 @@ function Faqs() {
   const answerStyle = {
     fontSize: '1rem',
     color: 'var(--gray)',
-    '@media (max-width: 600px)': { // Media query for mobile screens
+    '@media (max-width: 600px)': { 
       fontSize: '0.9rem',
     },
   };
@@ -117,8 +117,8 @@ function Faqs() {
   return (
     <div style={divStyle}>
       <div style={containerStyle}>
-        <h2 style={{ marginBottom: '5px', marginTop: '5px' }}>Frequently Asked Questions</h2>
-        <p style={{ marginBottom: '20px', textAlign: 'justify' }}>
+        <h2 style={{ marginBottom: '5px', marginTop: '5px' }} data-aos="fade-right">Frequently Asked Questions</h2>
+        <p style={{ marginBottom: '20px', textAlign: 'justify' }} data-aos="fade-left">
           Welcome to our Frequently Asked Questions section. 
           Here, you'll find answers to the most common inquiries related to our platform. 
           From account access issues to password recovery steps, 

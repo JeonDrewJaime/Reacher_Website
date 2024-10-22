@@ -4,7 +4,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import GlobalStyles from '../GlobalStyles';
-import OneTrickPonyFont from '../assets/fonts/OneTrickPony.ttf'; // Ensure this path is correct
+import OneTrickPonyFont from '../assets/fonts/OneTrickPony.ttf'; 
 import AOS from 'aos';
 import 'aos/dist/aos.css'; // Import the AOS styles
 
@@ -17,7 +17,7 @@ const About = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#fdd011' }}>
+    <div style={{ padding: '20px', backgroundColor: '#d0e8a9' }}>
       <GlobalStyles />
 
       <style>
@@ -38,7 +38,8 @@ const About = () => {
           marginBottom: '20px',
           fontFamily: 'OneTrickPony',
           fontWeight: 'normal',
-          color: 'var(--wht)',
+          color: 'var(--drk-gre)',
+          marginTop: '2%',
           fontSize: {
             xs: '60px',
             sm: '60px',
@@ -60,14 +61,14 @@ const About = () => {
           padding: '20px',
         }}
       >
-        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center' }} data-aos="fade-up" data-aos-anchor-placement="top-center">
+        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center', marginTop:'3%', marginBottom:'3%', }} data-aos="fade-up" data-aos-anchor-placement="top-center">
           <Typography
             variant="h2"
             sx={{
               marginBottom: '10px',
               fontFamily: 'OneTrickPony',
               fontWeight: 'normal',
-              color: 'var(--wht)',
+              color: 'var(--drk-gre)',
               fontSize: {
                 xs: '40px',
                 sm: '40px',
@@ -78,7 +79,7 @@ const About = () => {
           >
             MISSION
           </Typography>
-          <Typography sx={{ color: 'var(--wht)', fontFamily: 'sans-serif', 
+          <Typography sx={{ color: 'var(--drk-gre)', fontFamily: 'sans-serif', 
             fontSize: {
               xs: '18px',
               sm: '18px',
@@ -92,16 +93,30 @@ const About = () => {
           </Typography>
         </Box>
 
-        <Divider orientation="vertical" flexItem sx={{ borderColor: 'var(--wht)', margin: '0 20px' }} />
 
-        <Box sx={{ flex: 1, paddingLeft: '20px', textAlign: 'center' }} data-aos="fade-up">
+        <Divider 
+  sx={{ 
+    borderColor: 'var(--drk-gre)', 
+    borderWidth: '1px', 
+    marginTop: '3%', 
+    height: '330px', 
+    mx: 2, 
+    display: { xs: 'none', sm: 'block' }  // Hide on extra small screens, show on small and up
+  }} 
+  data-aos="zoom-in" 
+/>
+
+
+
+
+        <Box sx={{ flex: 1, paddingLeft: '20px', textAlign: 'center', marginTop:'3%', marginBottom:'3%'}} data-aos="fade-up">
           <Typography
             variant="h2"
             sx={{
               marginBottom: '10px',
               fontFamily: 'OneTrickPony',
               fontWeight: 'normal',
-              color: 'var(--wht)',
+              color: 'var(--drk-gre)',
               fontSize: {
                 xs: '40px',
                 sm: '40px',
@@ -112,7 +127,7 @@ const About = () => {
           >
             VISION
           </Typography>
-          <Typography sx={{ color: 'var(--wht)', fontFamily: 'sans-serif',
+          <Typography sx={{ color: 'var(--drk-gre)', fontFamily: 'sans-serif',
             fontSize: {
               xs: '18px',
               sm: '18px',
@@ -128,15 +143,14 @@ const About = () => {
           </Typography>
         </Box>
       </Box>
-
       <Box 
   sx={{ 
     display: 'flex',                     
-    justifyContent: 'center',           // Center the boxes horizontally
-    alignItems: 'stretch',              // Make boxes equal in height
+    justifyContent: 'center',           
+    alignItems: 'stretch',              
     padding: '20px',                    
-    gap: '5px',                         // Reduced gap for closer spacing
-    flexDirection: { xs: 'column', md: 'row' }, // Stacks vertically on small screens
+    gap: '25px',                         
+    flexDirection: { xs: 'column', md: 'row' },
   }}
 >
   {/* Box 1 */}
@@ -148,18 +162,18 @@ const About = () => {
       justifyContent: 'center',        // Center items vertically
       borderRadius: '10px',            // Removed border
       padding: '20px',                
-      backgroundColor: '#fce583',      // Changed background color to #fce583
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',  // Add shadow
+      backgroundColor: '#FFFFF0',      // Changed background color to match Box 3
+      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  // Dark green shadow
       flex: '1 1 300px',               // Ensure equal width for each box
       minWidth: '300px',               
       minHeight: '350px',              
-    }}
+    }} data-aos="zoom-out-right"
   >
-    <ScheduleIcon sx={{ fontSize: '80px', color: 'var(--wht)' }} />
-    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--blk)' }}>
+    <ScheduleIcon sx={{ fontSize: '80px', color: 'var(--drk-gre)' }} />
+    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)' }}>
       8AM TO 5PM
     </Typography>
-    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--blk)' }}>
+    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--drk-gre)' }}>
       Working Hours
     </Typography>
   </Box>
@@ -173,18 +187,25 @@ const About = () => {
       justifyContent: 'center',       
       borderRadius: '10px',           
       padding: '20px', 
-      backgroundColor: '#fce583',     
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',  
+      backgroundColor: '#FFFFF0',      
+      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  
       flex: '1 1 300px',              
       minWidth: '300px',               
       minHeight: '350px',              
-    }}
+    }}data-aos="zoom-out"
   >
-    <DirectionsIcon sx={{ fontSize: '90px', color: 'var(--wht)' }} />
-    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--blk)' }}>
+    <DirectionsIcon sx={{ fontSize: '90px', color: 'var(--drk-gre)' }} />
+    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)',
+      fontSize: {
+        xs: '15px',
+        sm: '18px',
+        md: '15px',
+        lg: '18px'
+      }
+     }}>
       Patag St. Lawa, Meycauayan, Bulacan
     </Typography>
-    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--blk)' }}>
+    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--drk-gre)' }}>
       Get Directions
     </Typography>
   </Box>
@@ -198,22 +219,23 @@ const About = () => {
       justifyContent: 'center',       
       borderRadius: '10px',           
       padding: '20px', 
-      backgroundColor: '#fce583',     
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',  
+      backgroundColor: '#FFFFF0',     
+      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  // Dark green shadow
       flex: '1 1 300px',              
       minWidth: '300px',               
       minHeight: '350px',              
-    }}
+    }}data-aos="zoom-out-left"
   >
-    <PhoneInTalkIcon sx={{ fontSize: '80px', color: 'var(--wht)' }} />
-    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--blk)' }}>
+    <PhoneInTalkIcon sx={{ fontSize: '80px', color: 'var(--drk-gre)' }} />
+    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)' }}>
       (044) 935 4392
     </Typography>
-    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--blk)' }}>
+    <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--drk-gre)' }}>
       Contact Us
     </Typography>
   </Box>
 </Box>
+
 
 
    
