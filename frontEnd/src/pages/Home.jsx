@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import skyImage from '../assets/sky.png'; 
 import Btns from '../components/UI/Btns';
 
 function Home() {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
 
   const divStyle = {
     backgroundImage: `url(${skyImage})`,

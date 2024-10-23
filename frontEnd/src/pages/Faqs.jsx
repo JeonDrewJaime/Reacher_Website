@@ -26,12 +26,11 @@ function Faqs() {
   };
 
   const [expanded, setExpanded] = React.useState(false);
-
   const faqs = [
     {
       question: "I forgot my password. How can I reset it?",
       answer:
-        'Click on the "Forgot Password?" link on the login page. Enter your registered email address, and you\'ll receive a link to reset your password. If you do not receive an email, please check your spam or junk folder.',
+        "If you can't remember the password associated with your account, please contact support at marychild@gmail.com for assistance. Provide any details you remember about your account to help locate it.",
     },
     {
       question: "I entered the correct password, but I still can't log in. What should I do?",
@@ -59,9 +58,9 @@ function Faqs() {
         "Ensure you are using the most recent password reset link sent to your email. Double-check that there are no extra spaces before or after the password when copying it. If the issue persists, clear your browser’s cache and cookies or try logging in from a different browser.",
     },
     {
-      question: "I can't remember my email address for the account. How can I recover it?",
+      question: "I can't remember my username for the account. How can I recover it?",
       answer:
-        "If you can't remember the email address associated with your account, please contact support at marychild@gmail.com for assistance. Provide any details you remember about your account to help locate it.",
+        "If you can't remember the username associated with your account, please contact support at marychild@gmail.com for assistance. Provide any details you remember about your account to help locate it.",
     },
     {
       question: "For other concerns or assistance, how can I get help?",
@@ -69,12 +68,13 @@ function Faqs() {
         "For other concerns or assistance, please send an email to marychild@gmail.com.",
     },
   ];
+  
 
   const handleExpansion = (index) => {
     setExpanded(expanded === index ? false : index);
   };
 
-  // Inline styles for container and accordion elements
+
   const containerStyle = {
     maxWidth: '80%',
     margin: '0 auto',

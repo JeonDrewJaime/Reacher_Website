@@ -17,6 +17,7 @@ const GlobalStyles = createGlobalStyle`
     --gray: #9698a6;
     --gre: #d0e8a9;
     --drk-gre: #1f5967;
+    --blu: #a6dae5;
     --footer-bg: #70bc4f;
 
     /* Font Size Variables */
