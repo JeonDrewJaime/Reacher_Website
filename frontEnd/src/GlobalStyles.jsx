@@ -8,7 +8,7 @@ const GlobalStyles = createGlobalStyle`
     font-weight: normal;
     font-style: normal;
   }
-
+  
   :root {
     --pri: #FE81B9;
     --sec: #45b6d4;

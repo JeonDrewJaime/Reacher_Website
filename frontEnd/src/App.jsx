@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Widgets/Navbar";
 import Footer from "./components/Widgets/Footer";
 import Home from "./pages/Home";
@@ -6,9 +6,12 @@ import About from "./pages/About";
 import Faqs from "./pages/Faqs";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Teacher/Dashboard"; // Import your components
-
+import "./general.css"
 
 const App = () => {
+    const location = useLocation(); 
+    
+    const hideFooter = location.pathname.includes('/dashboard'); 
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -16,18 +19,19 @@ const App = () => {
             <div style={{ flex: 1, overflowY: 'auto' }}>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/faqs" element={<Faqs />} />
+                    <Route path="/" element={<About />} />
+                    <Route path="/" element={<Faqs />} />
                     <Route path="/" element={<Login />} />
-                    <Route path="/dashboard/*" element={<Dashboard />} /> {/* Wildcard for Dashboard */}
+                    <Route path="/dashboard/*" element={<Dashboard />} /> 
                 </Routes>
             </div>
-            <Footer />
+            {!hideFooter && <Footer />} 
         </div>
     );
 };
 
 export default App;
+
 
 
 
