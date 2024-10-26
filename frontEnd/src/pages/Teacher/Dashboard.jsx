@@ -222,7 +222,7 @@ Welcome
           <Typography
             variant="h4"
             noWrap
-            component="div"
+         
             sx={{
               flexGrow: 1,
               fontFamily: 'OneTrickPony, sans-serif',
@@ -251,8 +251,6 @@ Welcome
       {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
     </IconButton>
   </DrawerHeader>
-
-
   <List>
     {['Dashboard', 'Schedule', 'Modules', 'Classes'].map((text, index) => (
       <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -327,12 +325,7 @@ Welcome
     </ListItemButton>
   </ListItem>
 </Drawer>
-
-
-
-
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3, }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -4}}>
         <DrawerHeader />
 
         <Box sx={{ flexGrow: 1, }}>
@@ -352,7 +345,6 @@ Welcome
                       md: '30px 5px',
                       lg: '30px 3px',
                     }
-                    
 
                 }}>
                 <Typography
@@ -395,7 +387,6 @@ Welcome
 
                 </CalendarContainer>
 
-
                 <TodoContainer sx={{
                   padding: {
                     xs: '20px 5px',
@@ -418,8 +409,6 @@ Welcome
 
                   <Typography>To Grade: Kindergarten</Typography>
                   <Typography>Assignments Due: Class 3B</Typography>
-
-
                 </TodoContainer>
               </Box>
             </Grid>
