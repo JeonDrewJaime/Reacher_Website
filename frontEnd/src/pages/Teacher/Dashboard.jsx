@@ -7,7 +7,6 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -30,6 +29,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from 'dayjs';
 import Grid from '@mui/material/Grid';
+import logo from '/src/assets/mcalogo.png';
 
 // Styled components
 const CalendarContainer = styled(Box)(({ theme }) => ({
@@ -176,9 +176,30 @@ function Dashboard() {
         return <Classes />;
       default:
         return (
-          <Typography>
-            Welcome to your Dashboard. You can manage your schedule, modules, and classes here.
-          </Typography>
+   
+<Typography
+variant="h2"
+align="center"
+sx={{
+  marginBottom: '20px',
+  fontFamily: 'OneTrickPony',
+  fontWeight: 'normal',
+  color: 'var(--sec)',
+  marginTop: '2%',
+  fontSize: {
+    xs: '60px',
+    sm: '60px',
+    md: '60px'
+  }
+}}
+data-aos="fade-up"
+>
+Welcome
+</Typography>
+
+
+
+
         );
     }
   };
@@ -186,14 +207,14 @@ function Dashboard() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--pri)' }}>
-        <Toolbar>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
+        <Toolbar >
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ marginRight: 5, ...(open && { display: 'none' }) }}
+            sx={{ color:'var(--pri)', marginRight: 5, ...(open && { display: 'none' }) }}
           >
             <MenuIcon />
           </IconButton>
@@ -206,74 +227,106 @@ function Dashboard() {
               flexGrow: 1,
               fontFamily: 'OneTrickPony, sans-serif',
               fontSize: '2rem',
+              color:'var(--pri)'
             }}
           >
+            <img src={logo} alt="Logo" style={{ width: '27px', height: '25px', marginRight: '8px', marginTop: '10px' }} />
             Marychild Academy
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {['Dashboard', 'Schedule', 'Modules', 'Classes'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                onClick={() =>
-                  setCurrentComponent(
-                    index === 0 ? 'dashboard' : index === 1 ? 'schedule' : index === 2 ? 'modules' : 'classes'
-                  )
-                }
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}
-                >
-                  {index === 0 && <DashboardIcon />}
-                  {index === 1 && <ScheduleIcon />}
-                  {index === 2 && <ModuleIcon />}
-                  {index === 3 && <ClassIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider sx={{ marginTop: 'auto' }} />
-        <ListItem
-          disablePadding
+
+      <Drawer
+  variant="permanent"
+  open={open}
+  PaperProps={{
+    sx: {
+      backgroundColor: 'var(--pri)', // Drawer background color
+      color: 'var(--wht)', // Default text color for Drawer content
+    },
+  }}
+>
+  <DrawerHeader>
+    <IconButton onClick={handleDrawerClose} sx={{ color: 'var(--wht)' }}>
+      {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+    </IconButton>
+  </DrawerHeader>
+
+
+  <List>
+    {['Dashboard', 'Schedule', 'Modules', 'Classes'].map((text, index) => (
+      <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+          onClick={() =>
+            setCurrentComponent(
+              index === 0 ? 'dashboard' : index === 1 ? 'schedule' : index === 2 ? 'modules' : 'classes'
+            )
+          }
           sx={{
-            display: 'block',
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            color: 'var(--wht)', // Button text color
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)', // Hover effect
+            },
           }}
         >
-          <ListItemButton
-            onClick={handleLogout}
+          <ListItemIcon
             sx={{
-              minHeight: 48,
-              justifyContent: open ? 'initial' : 'center',
-              px: 2.5,
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+              color: 'var(--wht)', // Icon color
             }}
           >
-            <ListItemIcon
-              sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}
-            >
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
-      </Drawer>
+            {index === 0 && <DashboardIcon />}
+            {index === 1 && <ScheduleIcon />}
+            {index === 2 && <ModuleIcon />}
+            {index === 3 && <ClassIcon />}
+          </ListItemIcon>
+          <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
+    ))}
+  </List>
+
+  
+  <ListItem
+    disablePadding
+    sx={{
+      display: 'block',
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+    }}
+  >
+    <ListItemButton
+      onClick={handleLogout}
+      sx={{
+        minHeight: 48,
+        justifyContent: open ? 'initial' : 'center',
+        px: 2.5,
+        color: 'var(--wht)', // Logout button text color
+        '&:hover': {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Hover effect for logout button
+        },
+      }}
+    >
+      <ListItemIcon
+        sx={{
+          minWidth: 0,
+          mr: open ? 3 : 'auto',
+          justifyContent: 'center',
+          color: 'var(--wht)', // Logout icon color
+        }}
+      >
+        <LogoutIcon />
+      </ListItemIcon>
+      <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+    </ListItemButton>
+  </ListItem>
+</Drawer>
 
 
 
