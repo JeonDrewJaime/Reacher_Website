@@ -1,43 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import LogoutIcon from '@mui/icons-material/Logout';
+import {
+  Box,
+  CssBaseline,
+  Toolbar,
+  Typography,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  AppBar as MuiAppBar,
+  Drawer as MuiDrawer,
+  Popover,
+  Grid,
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Logout as LogoutIcon,
+  Dashboard as DashboardIcon,
+  Schedule as ScheduleIcon,
+  Class as ClassIcon,
+  FolderOpen as ModuleIcon,
+  People as AccountsIcon,
+  AccountCircle as AccountCircleIcon,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import ClassIcon from '@mui/icons-material/Class';
-import ModuleIcon from '@mui/icons-material/FolderOpen';
+
 import Schedule from './Schedule';
 import Modules from './Modules';
 import Classes from './Classes';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs from 'dayjs';
-import Grid from '@mui/material/Grid';
+import Accounts from './Accounts';
+import Profile from './Profile';
 import logo from '/src/assets/mcalogo.png';
 
-// Styled components
+import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+
+
 const CalendarContainer = styled(Box)(({ theme }) => ({
   border: `2px var(--gray)`,
   boxShadow: theme.shadows[4],
   borderRadius: '8px',
   padding: theme.spacing(1),
-  margin: '2px 0',
+  margin: '2px 10px',
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
@@ -62,8 +72,7 @@ const TodoContainer = styled(Box)(({ theme }) => ({
   boxShadow: theme.shadows[4],
   borderRadius: '8px',
   padding: theme.spacing(2),
-  marginTop: '20px',
-  marginBottom: '30px',
+  margin: '20px 10px 30px 0',
   width: '100%',
   textAlign: 'center',
   marginLeft: 'auto',  
@@ -81,37 +90,7 @@ const TodoContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-
 const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -131,35 +110,50 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })( 
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  })
-);
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden', 
+  ...(open && {
+    '& .MuiDrawer-paper': {
+      width: drawerWidth,
+      boxSizing: 'border-box',
+      overflow: 'hidden', 
+    },
+  }),
+  ...(!open && {
+    '& .MuiDrawer-paper': {
+      width: `calc(${theme.spacing(7)} + 1px)`,
+      [theme.breakpoints.up('sm')]: {
+        width: `calc(${theme.spacing(8)} + 1px)`,
+      },
+      overflow: 'hidden', 
+    },
+  }),
+}));
 
-function Dashboard() {
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar,
+}));
+
+const Dashboard = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [currentComponent, setCurrentComponent] = useState('dashboard');
-  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [hoverText, setHoverText] = useState('');
+  const [isLogoutPopover, setIsLogoutPopover] = useState(false); // New state for logout popover
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
   };
 
   const handleLogout = () => {
@@ -168,68 +162,62 @@ function Dashboard() {
 
   const renderComponent = () => {
     switch (currentComponent) {
-      case 'schedule':
-        return <Schedule />;
-      case 'modules':
-        return <Modules />;
-      case 'classes':
-        return <Classes />;
-      default:
+      case 'schedule': return <Schedule />;
+      case 'modules': return <Modules />;
+      case 'classes': return <Classes />;
+      case 'accounts': return <Accounts />;
+      case 'profile': return <Profile />;
+      default: 
         return (
-   
-<Typography
-variant="h2"
-align="center"
-sx={{
-  marginBottom: '20px',
-  fontFamily: 'OneTrickPony',
-  fontWeight: 'normal',
-  color: 'var(--sec)',
-  marginTop: '2%',
-  fontSize: {
-    xs: '60px',
-    sm: '60px',
-    md: '60px'
-  }
-}}
-data-aos="fade-up"
->
-Welcome
-</Typography>
-
-
-
-
+          <Typography
+            variant="h2"
+            align="center"
+            sx={{
+              marginBottom: '20px',
+              fontFamily: 'OneTrickPony',
+              fontWeight: 'normal',
+              color: 'var(--sec)',
+              marginTop: '2%',
+              fontSize: { xs: '60px', sm: '60px', md: '60px' },
+            }}
+          >
+            Welcome
+          </Typography>
         );
     }
   };
+
+  const handlePopoverOpen = (event, text, isLogout = false) => {
+    if (!open) { // Only set the popover if the drawer is closed
+      setAnchorEl(event.currentTarget);
+      setHoverText(text);
+      setIsLogoutPopover(isLogout); // Set whether it's the logout popover
+    }
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+    setHoverText('');
+    setIsLogoutPopover(false); // Reset logout popover state
+  };
+
+  const openPopover = Boolean(anchorEl);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
-        <Toolbar >
+        <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={handleDrawerToggle}
             edge="start"
-            sx={{ color:'var(--pri)', marginRight: 5, ...(open && { display: 'none' }) }}
+            sx={{ color: 'var(--pri)', marginRight: 5, ...(open && { display: 'none' }) }}
           >
             <MenuIcon />
           </IconButton>
-
-          <Typography
-            variant="h4"
-            noWrap
-            component="div"
-            sx={{
-              flexGrow: 1,
-              fontFamily: 'OneTrickPony, sans-serif',
-              fontSize: '2rem',
-              color:'var(--pri)'
-            }}
-          >
+          <Typography variant="h4" noWrap component="div" sx={{ flexGrow: 1, fontFamily: 'OneTrickPony, sans-serif', fontSize: '2rem', color: 'var(--pri)' }}>
             <img src={logo} alt="Logo" style={{ width: '27px', height: '25px', marginRight: '8px', marginTop: '10px' }} />
             Marychild Academy
           </Typography>
@@ -237,111 +225,77 @@ Welcome
       </AppBar>
 
       <Drawer
-  variant="permanent"
-  open={open}
-  PaperProps={{
-    sx: {
-      backgroundColor: 'var(--pri)', // Drawer background color
-      color: 'var(--wht)', // Default text color for Drawer content
-    },
-  }}
->
-  <DrawerHeader>
-    <IconButton onClick={handleDrawerClose} sx={{ color: 'var(--wht)' }}>
-      {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-    </IconButton>
-  </DrawerHeader>
+        variant="permanent"
+        open={open}
+        PaperProps={{ sx: { backgroundColor: 'var(--pri)', color: 'var(--wht)', display: 'flex', flexDirection: 'column' } }}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerToggle} sx={{ color: 'var(--wht)' }}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
 
+        <List sx={{ flexGrow: 1 }}>
+          {['Dashboard', 'Schedule', 'Modules', 'Classes', 'Accounts', 'Profile'].map((text, index) => (
+            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                onMouseEnter={(event) => handlePopoverOpen(event, text)}
+                onMouseLeave={handlePopoverClose}
+                onClick={() => setCurrentComponent(['dashboard', 'schedule', 'modules', 'classes', 'accounts', 'profile'][index])}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  color: 'var(--wht)',
+                  '&:hover': { backgroundColor: 'rgba(153, 30, 86, 0.7)' },
+                  '&.Mui-selected': { backgroundColor: 'rgba(153, 30, 86, 0.9)', color: 'var(--wht)' },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
+                  {index === 0 && <DashboardIcon />}
+                  {index === 1 && <ScheduleIcon />}
+                  {index === 2 && <ModuleIcon />}
+                  {index === 3 && <ClassIcon />}
+                  {index === 4 && <AccountsIcon />}
+                  {index === 5 && <AccountCircleIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
 
-  <List>
-    {['Dashboard', 'Schedule', 'Modules', 'Classes'].map((text, index) => (
-      <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
-          onClick={() =>
-            setCurrentComponent(
-              index === 0 ? 'dashboard' : index === 1 ? 'schedule' : index === 2 ? 'modules' : 'classes'
-            )
-          }
-          sx={{
-            minHeight: 48,
-            justifyContent: open ? 'initial' : 'center',
-            px: 2.5,
-            color: 'var(--wht)', // Button text color
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)', // Hover effect
-            },
-          }}
-        >
-          <ListItemIcon
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
             sx={{
-              minWidth: 0,
-              mr: open ? 3 : 'auto',
-              justifyContent: 'center',
-              color: 'var(--wht)', // Icon color
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+              color: 'var(--wht)',
+              '&:hover': {
+                backgroundColor: 'rgba(153, 30, 86, 0.7)', // Dark pink on hover for logout button
+              },
             }}
           >
-            {index === 0 && <DashboardIcon />}
-            {index === 1 && <ScheduleIcon />}
-            {index === 2 && <ModuleIcon />}
-            {index === 3 && <ClassIcon />}
-          </ListItemIcon>
-          <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-        </ListItemButton>
-      </ListItem>
-    ))}
-  </List>
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+      </Drawer>
 
-  
-  <ListItem
-    disablePadding
-    sx={{
-      display: 'block',
-      position: 'absolute',
-      bottom: 0,
-      width: '100%',
-    }}
-  >
-    <ListItemButton
-      onClick={handleLogout}
-      sx={{
-        minHeight: 48,
-        justifyContent: open ? 'initial' : 'center',
-        px: 2.5,
-        color: 'var(--wht)', // Logout button text color
-        '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Hover effect for logout button
-        },
-      }}
-    >
-      <ListItemIcon
-        sx={{
-          minWidth: 0,
-          mr: open ? 3 : 'auto',
-          justifyContent: 'center',
-          color: 'var(--wht)', // Logout icon color
-        }}
-      >
-        <LogoutIcon />
-      </ListItemIcon>
-      <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-    </ListItemButton>
-  </ListItem>
-</Drawer>
-
-
-
-
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3, }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -20 }}>
         <DrawerHeader />
 
         <Box sx={{ flexGrow: 1, }}>
+        <Grid container spacing={2}>
 
-          <Grid container spacing={2}>
-
-          <Grid item xs={12} md={7} lg={8.3} sx={{border: 1, }}>
+        <Grid item xs={12} md={7} lg={8.3} sx={{border: 1, }}>
               {renderComponent()}
             </Grid>
+
 
             <Grid item xs={12} md={5} lg={3.7} >
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -369,6 +323,10 @@ Welcome
 >
   Calendar
 </Typography>
+
+
+
+
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DateCalendar
     defaultValue={dayjs()}
@@ -389,14 +347,10 @@ Welcome
     }}
   />
 </LocalizationProvider>
+            </CalendarContainer>
 
 
-
-
-                </CalendarContainer>
-
-
-                <TodoContainer sx={{
+            <TodoContainer sx={{
                   padding: {
                     xs: '20px 5px',
                     sm: '20px 5px',
@@ -416,19 +370,58 @@ Welcome
                     To Do List
                   </Typography>
 
-                  <Typography>To Grade: Kindergarten</Typography>
-                  <Typography>Assignments Due: Class 3B</Typography>
-
-
-                </TodoContainer>
-              </Box>
-            </Grid>
+              <List>
+                <ListItem>
+                  <ListItemText primary="To Grade" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Due assignments for Class A" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Due assignments for Class B" />
+                </ListItem>
+              </List>
+            </TodoContainer>
+            </Box>
           </Grid>
-
-        </Box>
+        </Grid>
       </Box>
+
+      <Popover
+  id={openPopover ? 'mouse-over-popover' : undefined}
+  sx={{
+    pointerEvents: 'none',
+  }}
+  open={openPopover}
+  anchorEl={anchorEl}
+  onClose={handlePopoverClose}
+  disableRestoreFocus
+  anchorOrigin={{
+    vertical: 'bottom', // Position the popover below the anchor element
+    horizontal: 'right', // Align to the right of the anchor element
+  }}
+  transformOrigin={{
+    vertical: 'top', // Align the top of the popover to the top of the anchor
+    horizontal: 'right', // Align the right side of the popover to the right side of the anchor
+  }}
+>
+  <Typography
+    sx={{
+      p: 1,
+      bgcolor: 'var(--sec)',
+      color: 'var(--wht)',
+      textAlign: 'end', // Corrected from align to textAlign
+    }}
+  >
+    {isLogoutPopover ? 'Logout' : hoverText}
+  </Typography>
+</Popover>
+
+    </Box>
     </Box>
   );
-}
+};
 
 export default Dashboard;
+
+

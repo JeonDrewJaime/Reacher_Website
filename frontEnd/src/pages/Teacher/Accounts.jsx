@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { List, ListItem, ListItemText, TextField, Typography, Box, InputAdornment, Select, MenuItem, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import Button from '@mui/material/Button';
-import Fab from '@mui/material/Fab';
 
-function Classes() {
+function Accounts() {
 
   const initialAccounts = [
     { id: 1, email: 'alice@example.com', status: 'Active' },
@@ -36,26 +33,12 @@ function Classes() {
     setFilterStatus(event.target.value);
   };
 
-
-
-
   return (
     <Box p={2}>
       <Typography variant="h4" gutterBottom>
-        Classes
+        Accounts
       </Typography>
       
-      <Box sx={{ padding: 2 }}>
-      {/* Header with Add Button */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-       
-        <Fab color="primary" aria-label="add" onClick={() => setOpenForm(true)}>
-          <AddIcon />
-        </Fab>
-      </Box>
-
-      </Box>
-
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
@@ -107,4 +90,4 @@ function Classes() {
   );
 }
 
-export default Classes;
+export default Accounts;

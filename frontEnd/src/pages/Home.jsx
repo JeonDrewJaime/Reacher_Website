@@ -135,14 +135,32 @@ function Home() {
   return (
     <div style={divStyle} ref={divRef}>
      
-      <h1 style={{ 
-        color: 'white', 
-        textAlign: 'center', 
-        marginBottom: '-120px',  
-      }} 
-      data-aos="fade-up" data-aos-duration="3000">
-        Welcome to Reacher
-      </h1>
+     <h1
+  style={{
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: '-120px',
+    opacity: 0,
+    animation: 'fadeUp 3s ease forwards',
+  }}
+>
+  Welcome to Reacher
+</h1>
+<style>
+  {`
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `}
+</style>
+
 
    
       <div style={{ 

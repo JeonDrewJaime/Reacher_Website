@@ -99,9 +99,9 @@ const About = () => {
     borderColor: 'var(--drk-gre)', 
     borderWidth: '1px', 
     marginTop: '3%', 
-    height: '330px', 
+    height: '350px', 
     mx: 2, 
-    display: { xs: 'none', sm: 'block' }  // Hide on extra small screens, show on small and up
+    display: { xs: 'none', sm: 'none', md: 'block', lg: 'block'}  // Hide on extra small screens, show on small and up
   }} 
   data-aos="zoom-in" 
 />
