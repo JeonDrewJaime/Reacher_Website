@@ -92,9 +92,7 @@ const About = () => {
             They will be prepared to apply their knowledge in order to function independently and contribute to our global society.
           </Typography>
         </Box>
-
-
-        <Divider 
+     <Divider 
   sx={{ 
     borderColor: 'var(--drk-gre)', 
     borderWidth: '1px', 
@@ -105,10 +103,6 @@ const About = () => {
   }} 
   data-aos="zoom-in" 
 />
-
-
-
-
         <Box sx={{ flex: 1, paddingLeft: '20px', textAlign: 'center', marginTop:'3%', marginBottom:'3%'}} data-aos="fade-up">
           <Typography
             variant="h2"
@@ -156,15 +150,15 @@ const About = () => {
   {/* Box 1 */}
   <Box 
     sx={{ 
-      display: 'flex',                 // Enable flexbox
-      flexDirection: 'column',         // Align items vertically
-      alignItems: 'center',            // Center items horizontally
-      justifyContent: 'center',        // Center items vertically
-      borderRadius: '10px',            // Removed border
+      display: 'flex',                 
+      flexDirection: 'column',         
+      alignItems: 'center',            
+      justifyContent: 'center',        
+      borderRadius: '10px',           
       padding: '20px',                
-      backgroundColor: '#FFFFF0',      // Changed background color to match Box 3
-      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  // Dark green shadow
-      flex: '1 1 300px',               // Ensure equal width for each box
+      backgroundColor: '#FFFFF0',     
+      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  
+      flex: '1 1 300px',            
       minWidth: '300px',               
       minHeight: '350px',              
     }} data-aos="zoom-out-right"

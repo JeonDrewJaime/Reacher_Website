@@ -41,6 +41,7 @@ import Hero from '../../components/Widgets/Hero';
 import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import Footer from '../../components/Widgets/Footer';
 
 
 const CalendarContainer = styled(Box)(({ theme }) => ({
@@ -176,7 +177,8 @@ const Dashboard = () => {
                 fontWeight: 'normal',
                 color: 'var(--sec)',
                 fontSize: { xs: '40px', sm: '40px', md: '50px', lg: '42px' },
-                ml: {xs:'30px', sm:'30px', md:'50px', lg:'75px'}
+                ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
+                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
               }}
             >
               Welcome, Admin!
@@ -187,14 +189,17 @@ const Dashboard = () => {
                 fontWeight: 'normal',
                 color: 'var(--gray)',
                 fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '20px' },
+                
+                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'},
                 ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
-                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
+      
               }}
             >
               Have a good day!
             </Typography>
 
             <Hero />
+        
           </>
         );
     } 
@@ -218,6 +223,7 @@ const Dashboard = () => {
   const openPopover = Boolean(anchorEl);
 
   return (
+    <>
     <Box sx={{ display: 'flex', bgcolor:'#fafafa' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
@@ -301,14 +307,15 @@ const Dashboard = () => {
         </ListItem>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, bgcolor:'#fafafa' }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, backgroundColor: "black" }}>
         <DrawerHeader />
 
-        <Box sx={{ flexGrow: 1, }}>
+        <Box sx={{ flexGrow: 1,backgroundColor: "black"}}>
         <Grid container spacing={2}>
 
         <Grid item xs={12} md={7} lg={8.3} sx={{ }}>
               {renderComponent()}
+
             </Grid>
 
 
@@ -364,8 +371,6 @@ const Dashboard = () => {
   />
 </LocalizationProvider>
             </CalendarContainer>
-
-
             <TodoContainer sx={{ bgcolor:'var(--wht)',
             mr: {xs:'80px', sm:'80px', md:'10px', lg:'100px'}, 
                   padding: {
@@ -435,7 +440,10 @@ const Dashboard = () => {
 </Popover>
 
     </Box>
+    
     </Box>
+    <Footer/>
+    </>
   );
 };
 
