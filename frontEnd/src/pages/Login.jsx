@@ -62,7 +62,7 @@ function Login() {
         <Typography
           variant="h4"
           sx={{
-            color: '#292929',
+            color: 'var(--blk)',
             textAlign: 'center',
             fontWeight: '800',
             marginBottom: '40px',

@@ -143,7 +143,7 @@ export default function Navbar() {
                       to={path}
                       onClick={handleLinkClick}
                       sx={{
-                        color: isActive(path) ? '#45b6d4' : 'black',
+                        color: isActive(path) ? '#45b6d4' : 'var(--blk)',
                         backgroundColor: 'transparent',
                         fontFamily: 'sans-serif',
                         border: 'none',

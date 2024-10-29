@@ -1,110 +1,101 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
+import React from 'react';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import img1 from '../../assets/1.png';
+import img2 from '../../assets/2.png';
+import img3 from '../../assets/3.png';
 
-const drawerWidth = 240;
+const images = [img3, img2, img1];
 
-const images = [
-  "https://example.com/image1.jpg",
-  "https://example.com/image2.jpg",
-  "https://example.com/image3.jpg"
-];
+const OuterContainer = styled(Box)(({ theme }) => ({
+  border: `1px var(--gray)`,
+  boxShadow: theme.shadows[4],
+  backgroundColor: 'var(--wht)',
+  padding: '30px', 
+  borderRadius: '8px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: '40px auto',
+  maxWidth: '90%',
+  width: '100%',
+  [theme.breakpoints.up('xs')]: {
+    maxWidth: '100%', 
+    padding: '15px', 
+  },
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '850px',
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: '900px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: '1100px',
+  },
+}));
 
-function Hero(props) {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+const HeroContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  position: 'relative',
+  overflow: 'hidden',
+  backgroundSize: 'contain',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat', // Prevents image repetition
+
+  minHeight: '300px', // Reduced height for balanced aspect ratio
+  width: '100%',
+  [theme.breakpoints.up('xs')]: {
+    maxWidth: '100%',
+    minHeight: '300px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '800px',
+    minHeight: '350px',
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: '900px',
+    minHeight: '400px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: '1000px',
+    minHeight: '450px',
+  },
+}));
+
+function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   const goToPreviousImage = () => {
-    const isFirstImage = currentImageIndex === 0;
-    const newIndex = isFirstImage ? images.length - 1 : currentImageIndex - 1;
+    const newIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
     setCurrentImageIndex(newIndex);
   };
 
   const goToNextImage = () => {
-    const isLastImage = currentImageIndex === images.length - 1;
-    const newIndex = isLastImage ? 0 : currentImageIndex + 1;
+    const newIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
     setCurrentImageIndex(newIndex);
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` }, 
-          backgroundColor: "black"
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon sx = {{color: "white"}}/>
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Dynamic Hero Section with Navigation
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, position: 'relative' }}
-      >
-        <Toolbar />
-        
-        {/* Hero Section */}
-        <Box
-          sx={{
-            position: 'relative',
-            height: '400px',
-            width: '100%',
-            backgroundImage: `url(${images[currentImageIndex]})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '10px',
-          }}
-        >
-          {/* Left Arrow */}
-          <IconButton
-            sx={{ position: 'absolute', top: '50%', left: '20px', color: 'white', zIndex: 10 }}
-            onClick={goToPreviousImage}
-          >
-            <ArrowBackIosIcon />
-          </IconButton>
-
-          {/* Right Arrow */}
-          <IconButton
-            sx={{ position: 'absolute', top: '50%', right: '20px', color: 'white', zIndex: 10 }}
-            onClick={goToNextImage}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-
-          {/* Caption */}
-          <Box sx={{ position: 'absolute', bottom: '20px', left: '20px', color: 'white', backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '10px', borderRadius: '5px' }}>
-            <Typography variant="h4">Beautiful Dynamic Hero</Typography>
-            <Typography variant="subtitle1">Image {currentImageIndex + 1} of {images.length}</Typography>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+    <OuterContainer>
+      <HeroContainer sx={{ backgroundImage: `url(${images[currentImageIndex]})` }}>
+        {/* Navigation Arrows */}
+        <IconButton sx={{ position: 'absolute', top: '50%', left: '20px', color: 'white', bgcolor:'rgba(128, 128, 128, 0.5)', zIndex: 10 }} onClick={goToPreviousImage}>
+          <ArrowBackIosIcon />
+        </IconButton>
+        <IconButton sx={{ position: 'absolute', top: '50%', right: '20px', color: 'white', bgcolor:'rgba(128, 128, 128, 0.5)', zIndex: 10 }} onClick={goToNextImage}>
+          <ArrowForwardIosIcon />
+        </IconButton>
+      </HeroContainer>
+    </OuterContainer>
   );
 }
 
 export default Hero;
+
+
+

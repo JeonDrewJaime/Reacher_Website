@@ -37,6 +37,7 @@ function Home() {
     alignItems: 'center', 
     justifyContent: 'center',
     position: 'relative',
+    overflowX: 'hidden',
   };
 
   const handleLoginClick = () => {

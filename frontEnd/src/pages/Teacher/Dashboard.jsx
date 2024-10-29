@@ -36,6 +36,7 @@ import Classes from './Classes';
 import Accounts from './Accounts';
 import Profile from './Profile';
 import logo from '/src/assets/mcalogo.png';
+import Hero from '../../components/Widgets/Hero';
 
 import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -54,10 +55,10 @@ const CalendarContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   marginLeft: 'auto',  
   [theme.breakpoints.up('xs')]: {
-    maxWidth: '500px',
+    maxWidth: '320px',
   },
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '750px',
+    maxWidth: '550px',
   },
   [theme.breakpoints.up('md')]: {
     maxWidth: '400px',
@@ -77,10 +78,10 @@ const TodoContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   marginLeft: 'auto',  
   [theme.breakpoints.up('xs')]: {
-    maxWidth: '500px',
+    maxWidth: '320px',
   },
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '750px',
+    maxWidth: '550px',
   },
   [theme.breakpoints.up('md')]: {
     maxWidth: '400px',
@@ -132,7 +133,7 @@ const Drawer = styled(MuiDrawer, {
       },
       overflow: 'hidden', 
     },
-  }),
+  }), 
 }));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -150,7 +151,7 @@ const Dashboard = () => {
   const [currentComponent, setCurrentComponent] = useState('dashboard');
   const [anchorEl, setAnchorEl] = useState(null);
   const [hoverText, setHoverText] = useState('');
-  const [isLogoutPopover, setIsLogoutPopover] = useState(false); // New state for logout popover
+  const [isLogoutPopover, setIsLogoutPopover] = useState(false); 
 
   const handleDrawerToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -169,42 +170,55 @@ const Dashboard = () => {
       case 'profile': return <Profile />;
       default: 
         return (
-          <Typography
-            variant="h2"
-            align="center"
-            sx={{
-              marginBottom: '20px',
-              fontFamily: 'OneTrickPony',
-              fontWeight: 'normal',
-              color: 'var(--sec)',
-              marginTop: '2%',
-              fontSize: { xs: '60px', sm: '60px', md: '60px' },
-            }}
-          >
-            Welcome
-          </Typography>
+          <>
+            <Typography
+              sx={{
+                fontWeight: 'normal',
+                color: 'var(--sec)',
+                fontSize: { xs: '40px', sm: '40px', md: '50px', lg: '42px' },
+                ml: {xs:'30px', sm:'30px', md:'50px', lg:'75px'}
+              }}
+            >
+              Welcome, Admin!
+            </Typography>
+
+            <Typography
+              sx={{
+                fontWeight: 'normal',
+                color: 'var(--gray)',
+                fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '20px' },
+                ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
+                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
+              }}
+            >
+              Have a good day!
+            </Typography>
+
+            <Hero />
+          </>
         );
-    }
+    } 
   };
+  
 
   const handlePopoverOpen = (event, text, isLogout = false) => {
-    if (!open) { // Only set the popover if the drawer is closed
+    if (!open) { 
       setAnchorEl(event.currentTarget);
       setHoverText(text);
-      setIsLogoutPopover(isLogout); // Set whether it's the logout popover
+      setIsLogoutPopover(isLogout); 
     }
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
     setHoverText('');
-    setIsLogoutPopover(false); // Reset logout popover state
+    setIsLogoutPopover(false); 
   };
 
   const openPopover = Boolean(anchorEl);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', bgcolor:'#fafafa' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
         <Toolbar>
@@ -259,6 +273,7 @@ const Dashboard = () => {
                   {index === 4 && <AccountsIcon />}
                   {index === 5 && <AccountCircleIcon />}
                 </ListItemIcon>
+
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
@@ -274,7 +289,7 @@ const Dashboard = () => {
               px: 2.5,
               color: 'var(--wht)',
               '&:hover': {
-                backgroundColor: 'rgba(153, 30, 86, 0.7)', // Dark pink on hover for logout button
+                backgroundColor: 'rgba(153, 30, 86, 0.7)', 
               },
             }}
           >
@@ -286,26 +301,28 @@ const Dashboard = () => {
         </ListItem>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -20 }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, bgcolor:'#fafafa' }}>
         <DrawerHeader />
 
         <Box sx={{ flexGrow: 1, }}>
         <Grid container spacing={2}>
 
-        <Grid item xs={12} md={7} lg={8.3} sx={{border: 1, }}>
+        <Grid item xs={12} md={7} lg={8.3} sx={{ }}>
               {renderComponent()}
             </Grid>
 
 
             <Grid item xs={12} md={5} lg={3.7} >
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <CalendarContainer sx={{
+                <CalendarContainer sx={{ bgcolor:'var(--wht)',
+                 mr: {xs:'80px', sm:'80px', md:'10px', lg:'100px'}, 
                      padding: {
-                      xs: '20px 5px',
-                      sm: '20px 5px',
+                      xs: '10px 1px',
+                      sm: '10px 1px',
                       md: '30px 5px',
                       lg: '30px 3px',
                     }
+
                     
 
                 }}>
@@ -315,9 +332,9 @@ const Dashboard = () => {
     marginBottom: 1,
     fontSize: {
       xs: '30px',
-      sm: '35px',
-      md: '25px',
-      lg: '35px',
+      sm: '30px',
+      md: '30px',
+      lg: '30px',
     },
   }}
 >
@@ -326,13 +343,12 @@ const Dashboard = () => {
 
 
 
-
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DateCalendar
     defaultValue={dayjs()}
     sx={{
       '.MuiPickersDay-root': {
-        // Style for all days
+        
         '&.Mui-selected': {
           backgroundColor: 'var(--pri)', 
           color: 'white',
@@ -350,7 +366,8 @@ const Dashboard = () => {
             </CalendarContainer>
 
 
-            <TodoContainer sx={{
+            <TodoContainer sx={{ bgcolor:'var(--wht)',
+            mr: {xs:'80px', sm:'80px', md:'10px', lg:'100px'}, 
                   padding: {
                     xs: '20px 5px',
                     sm: '20px 5px',
@@ -362,9 +379,9 @@ const Dashboard = () => {
                   <Typography variant="h6" sx={{ marginBottom: 1,
                     fontSize: {
                       xs: '30px',
-                       sm: '35px',
-                         md: '25px',
-                           lg: '35px',
+                      sm: '30px',
+                      md: '30px',
+                      lg: '30px',
                     }
                    }}>
                     To Do List

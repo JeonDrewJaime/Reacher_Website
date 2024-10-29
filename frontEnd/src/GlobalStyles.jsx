@@ -12,7 +12,8 @@ const GlobalStyles = createGlobalStyle`
   :root {
     --pri: #FE81B9;
     --sec: #45b6d4;
-    --blk: #292929;
+    --blk: #40475f;
+    --drk-pnk: #181018;
     --wht: #FFFFFF;
     --gray: #9698a6;
     --gre: #d0e8a9;
