@@ -71,7 +71,12 @@ function Profile() {
 
   return (
     <OuterContainer>
-      <Grid container spacing={2} alignItems="center">
+      <Grid container rowSpacing={0} alignItems="center"   sx={{
+        backgroundImage: 'url(../src/assets/maxresdefault.jpg)', 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center', 
+        p: 5
+      }}>
         {/* Avatar */}
         <Grid item xs={3}>
           <Avatar {...stringAvatar(userName)} />
