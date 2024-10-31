@@ -114,7 +114,9 @@ export default function Navbar() {
                 aria-label="open drawer"
                 onClick={handleDrawerOpen}
                 edge="start"
-                sx={{ mr: 2, color: 'var(--blk)', ...(open && { display: 'none' }) }}
+                sx={{ mr: 2, color: 'var(--blk)', 
+                  overflowX: 'hidden',
+                  ...(open && { display: 'none' }) }}
               >
                 <MenuIcon />
               </IconButton>
@@ -127,11 +129,12 @@ export default function Navbar() {
                 flexGrow: 1,
                 fontFamily: 'OneTrickPony, sans-serif',
                 fontSize: '2rem',
+                
                 color: '#FE81B9',
               }}
             >
               <img src={logo} alt="Logo" style={{ width: '27px', height: '25px', marginRight: '8px', marginTop: '10px' }} />
-              Marychild Academy
+              Marychild Academy, Inc.
             </Typography>
 
             {!isMobile && (

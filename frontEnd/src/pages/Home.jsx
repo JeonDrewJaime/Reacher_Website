@@ -52,7 +52,7 @@ function Home() {
     
     const buttonTimeout = setTimeout(() => {
       setButtonVisible(true);
-    }, 4000); // Delay the button by 4 seconds
+    }, 4000); 
 
     return () => {
       clearTimeout(timeout);

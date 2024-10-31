@@ -11,7 +11,7 @@ import img3 from '../../assets/3.png';
 const images = [img3, img2, img1];
 
 const OuterContainer = styled(Box)(({ theme }) => ({
-  border: `1px var(--gray)`,
+  border: `1px solid var(--gray)`,
   boxShadow: theme.shadows[4],
   backgroundColor: 'var(--wht)',
   padding: '30px', 
@@ -22,6 +22,7 @@ const OuterContainer = styled(Box)(({ theme }) => ({
   margin: '40px auto',
   maxWidth: '90%',
   width: '100%',
+  
   [theme.breakpoints.up('xs')]: {
     maxWidth: '100%', 
     padding: '15px', 

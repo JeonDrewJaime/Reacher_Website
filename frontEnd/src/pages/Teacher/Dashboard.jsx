@@ -41,11 +41,10 @@ import Hero from '../../components/Widgets/Hero';
 import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import Footer from '../../components/Widgets/Footer';
 
 
 const CalendarContainer = styled(Box)(({ theme }) => ({
-  border: `2px var(--gray)`,
+  border: `1px solid var(--gray)`,
   boxShadow: theme.shadows[4],
   borderRadius: '8px',
   padding: theme.spacing(1),
@@ -70,7 +69,7 @@ const CalendarContainer = styled(Box)(({ theme }) => ({
 }));
 
 const TodoContainer = styled(Box)(({ theme }) => ({
-  border: `2px var(--gray)`,
+  border: `1px solid var(--gray)`,
   boxShadow: theme.shadows[4],
   borderRadius: '8px',
   padding: theme.spacing(2),
@@ -177,8 +176,7 @@ const Dashboard = () => {
                 fontWeight: 'normal',
                 color: 'var(--sec)',
                 fontSize: { xs: '40px', sm: '40px', md: '50px', lg: '42px' },
-                ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
-                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
+                ml: {xs:'30px', sm:'30px', md:'50px', lg:'75px'}
               }}
             >
               Welcome, Admin!
@@ -189,18 +187,35 @@ const Dashboard = () => {
                 fontWeight: 'normal',
                 color: 'var(--gray)',
                 fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '20px' },
-                
-                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'},
                 ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
-      
+                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
               }}
             >
               Have a good day!
             </Typography>
 
             <Hero />
-        
+
+            <Typography
+              sx={{
+                fontWeight: '500',
+                color: 'var(--blk)',
+                fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '30px' },
+                ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
+                mt: {xs:'30px', sm:'30px', md:'40px', lg:'50px'}
+              }}
+            >
+              Modules
+            </Typography>
+
           </>
+
+
+
+
+
+
+
         );
     } 
   };
@@ -223,7 +238,6 @@ const Dashboard = () => {
   const openPopover = Boolean(anchorEl);
 
   return (
-    <>
     <Box sx={{ display: 'flex', bgcolor:'#fafafa' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
@@ -239,7 +253,7 @@ const Dashboard = () => {
           </IconButton>
           <Typography variant="h4" noWrap component="div" sx={{ flexGrow: 1, fontFamily: 'OneTrickPony, sans-serif', fontSize: '2rem', color: 'var(--pri)' }}>
             <img src={logo} alt="Logo" style={{ width: '27px', height: '25px', marginRight: '8px', marginTop: '10px' }} />
-            Marychild Academy
+            Marychild Academy, Inc.
           </Typography>
         </Toolbar>
       </AppBar>
@@ -307,22 +321,21 @@ const Dashboard = () => {
         </ListItem>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, backgroundColor: "black" }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, bgcolor:'#fafafa'}}>
         <DrawerHeader />
 
-        <Box sx={{ flexGrow: 1,backgroundColor: "black"}}>
+        <Box sx={{ flexGrow: 1,  }}>
         <Grid container spacing={2}>
 
         <Grid item xs={12} md={7} lg={8.3} sx={{ }}>
               {renderComponent()}
-
             </Grid>
 
 
             <Grid item xs={12} md={5} lg={3.7} >
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                 <CalendarContainer sx={{ bgcolor:'var(--wht)',
-                 mr: {xs:'80px', sm:'80px', md:'10px', lg:'100px'}, 
+                 mr: {xs:'80px', sm:'80px', md:'10px', lg:'120px'}, 
                      padding: {
                       xs: '10px 1px',
                       sm: '10px 1px',
@@ -371,8 +384,10 @@ const Dashboard = () => {
   />
 </LocalizationProvider>
             </CalendarContainer>
+
+
             <TodoContainer sx={{ bgcolor:'var(--wht)',
-            mr: {xs:'80px', sm:'80px', md:'10px', lg:'100px'}, 
+            mr: {xs:'80px', sm:'80px', md:'10px', lg:'120px'}, 
                   padding: {
                     xs: '20px 5px',
                     sm: '20px 5px',
@@ -440,10 +455,7 @@ const Dashboard = () => {
 </Popover>
 
     </Box>
-    
     </Box>
-    <Footer/>
-    </>
   );
 };
 

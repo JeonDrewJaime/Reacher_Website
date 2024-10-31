@@ -6,12 +6,13 @@ import About from "./pages/About";
 import Faqs from "./pages/Faqs";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Teacher/Dashboard"; // Import your components
-import "./general.css"
+import "./general.css";
 
 const App = () => {
-    const location = useLocation(); 
-    
-    const hideFooter = location.pathname.includes('/dashboard'); 
+    const location = useLocation();
+
+    // Check if the current path includes '/dashboard'
+    const isDashboardPage = location.pathname.includes('/dashboard');
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -25,7 +26,8 @@ const App = () => {
                     <Route path="/dashboard/*" element={<Dashboard />} /> 
                 </Routes>
             </div>
-            {!hideFooter && <Footer />} 
+            {/* Conditionally set footer color to var(--pri) when on dashboard */}
+            <Footer style={{ backgroundColor: isDashboardPage ? 'var(--pri)' : 'var(--footer-bg)' }} /> 
         </div>
     );
 };

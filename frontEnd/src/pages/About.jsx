@@ -99,7 +99,7 @@ const About = () => {
     marginTop: '3%', 
     height: '350px', 
     mx: 2, 
-    display: { xs: 'none', sm: 'none', md: 'block', lg: 'block'}  // Hide on extra small screens, show on small and up
+    display: { xs: 'none', sm: 'none', md: 'block', lg: 'block'}  
   }} 
   data-aos="zoom-in" 
 />
@@ -165,7 +165,7 @@ const About = () => {
   >
     <ScheduleIcon sx={{ fontSize: '80px', color: 'var(--drk-gre)' }} />
     <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)' }}>
-      8AM TO 5PM
+      8AM TO 3PM
     </Typography>
     <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--drk-gre)' }}>
       Working Hours
@@ -214,15 +214,21 @@ const About = () => {
       borderRadius: '10px',           
       padding: '20px', 
       backgroundColor: '#FFFFF0',     
-      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  // Dark green shadow
+      boxShadow: '0px 4px 8px rgba(0, 100, 0, 0.5)',  
       flex: '1 1 300px',              
       minWidth: '300px',               
       minHeight: '350px',              
     }}data-aos="zoom-out-left"
   >
     <PhoneInTalkIcon sx={{ fontSize: '80px', color: 'var(--drk-gre)' }} />
-    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)' }}>
-      (044) 935 4392
+    <Typography variant="h5" sx={{ marginBottom: '5px', fontFamily: 'sans-serif', color: 'var(--drk-gre)',  
+    fontSize: {
+        xs: '15px',
+        sm: '18px',
+        md: '15px',
+        lg: '18px'
+      } }}>
+    044-892-9568, 0917-666-2879
     </Typography>
     <Typography variant="h6" sx={{ fontFamily: 'OneTrickPony', color: 'var(--drk-gre)' }}>
       Contact Us
