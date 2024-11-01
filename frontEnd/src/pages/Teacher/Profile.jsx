@@ -9,7 +9,6 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-
 const OuterContainer = styled(Box)(({ theme }) => ({
   border: `1px solid var(--gray)`,
   boxShadow: theme.shadows[4],
@@ -39,7 +38,6 @@ const OuterContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-
 function stringToColor(string) {
   let hash = 0;
   for (let i = 0; i < string.length; i += 1) {
@@ -53,7 +51,6 @@ function stringToColor(string) {
   return color;
 }
 
-// Function to create an avatar with initials based on name
 function stringAvatar(name) {
   return {
     sx: {
@@ -70,72 +67,93 @@ function Profile() {
   const userRole = 'Teacher';
 
   return (
-    <OuterContainer>
-      <Grid container rowSpacing={0} alignItems="center"   sx={{
-        backgroundImage: 'url(../src/assets/maxresdefault.jpg)', 
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center', 
-        p: 5
-      }}>
-        {/* Avatar */}
-        <Grid item xs={3}>
-          <Avatar {...stringAvatar(userName)} />
-        </Grid>
+    <>
+      <Typography variant="h4" gutterBottom sx={{ml: {xs:'30px', sm:'30px', md:'50px', lg:'75px'}}}>
+        Profile
+      </Typography>
+      
+      <OuterContainer>
+        <Box
+          sx={{
+            position: 'relative',
+            width: '100%',
+            minHeight: '300px',
+            backgroundImage: 'url(../src/assets/schoolbg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            p: 5,
+          }}
+        >
+          {/* Dark overlay for background */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+              zIndex: 1,
+            }}
+          />
 
-        {/* Name and Role */}
-        <Grid item xs={9} container direction="column">
-          {/* Name */}
-          <Grid item>
-            <Typography variant="h4" fontWeight="bold">
-              {userName}
-            </Typography>
+          <Grid container rowSpacing={0} alignItems="center" sx={{ position: 'relative', zIndex: 2 }}>
+            {/* Avatar */}
+            <Grid item xs={3}>
+              <Avatar {...stringAvatar(userName)} />
+            </Grid>
+
+            {/* Name and Role */}
+            <Grid item xs={9} container direction="column">
+              <Grid item>
+                <Typography variant="h4" fontWeight="bold" sx={{ color: 'white', opacity: 0.9 }}>
+                  {userName}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="subtitle1" sx={{ color: 'white', opacity: 0.7 }}>
+                  {userRole}
+                </Typography>
+              </Grid>
+            </Grid>
           </Grid>
+        </Box>
 
-          {/* Role */}
-          <Grid item>
-            <Typography variant="subtitle1" color="textSecondary">
-              {userRole}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
+        {/* Accordion sections */}
+        <Box mt={4} width="100%">
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Privacy Settings</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>eme</Typography>
+            </AccordionDetails>
+          </Accordion>
 
-      {/* Accordion sections */}
-      <Box mt={4} width="100%">
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Privacy Settings</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              eme
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Account Settings</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>eme</Typography>
+            </AccordionDetails>
+          </Accordion>
 
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Account Settings</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              eme
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Details</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              eme
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
-    </OuterContainer>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>eme</Typography>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      </OuterContainer>
+    </>
   );
 }
 

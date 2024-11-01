@@ -1,0 +1,39 @@
+// TodoList.js
+import React from 'react';
+import { styled } from '@mui/material/styles';
+import { Box, Typography } from '@mui/material';
+
+const TodoContainer = styled(Box)(({ theme }) => ({
+  border: `1px solid var(--gray)`,
+  boxShadow: theme.shadows[4],
+  borderRadius: '8px',
+  padding: theme.spacing(2),
+  margin: '20px 10px 30px 0',
+  width: '100%',
+  textAlign: 'center',
+  [theme.breakpoints.up('xs')]: {
+    maxWidth: '320px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '550px',
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: '400px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: '350px',
+  },
+}));
+
+const TodoList = () => {
+  return (
+    <TodoContainer>
+      <Typography variant="h6" sx={{ marginBottom: 2 }}>
+        To-Do List
+      </Typography>
+      {/* Here you can add the To-Do List functionality */}
+    </TodoContainer>
+  );
+};
+
+export default TodoList;

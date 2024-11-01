@@ -13,8 +13,8 @@ import {
   ListItemText,
   AppBar as MuiAppBar,
   Drawer as MuiDrawer,
-  Popover,
   Grid,
+  Popover,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -35,61 +35,10 @@ import Modules from './Modules';
 import Classes from './Classes';
 import Accounts from './Accounts';
 import Profile from './Profile';
+import Calendar from '../../components/Widgets/Calendar.jsx'; // Import your Calendar component
+import ToDoList from '../../components/Widgets/TodoList.jsx'; // Import your To Do List component
 import logo from '/src/assets/mcalogo.png';
 import Hero from '../../components/Widgets/Hero';
-
-import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-
-
-const CalendarContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--gray)`,
-  boxShadow: theme.shadows[4],
-  borderRadius: '8px',
-  padding: theme.spacing(1),
-  margin: '2px 10px',
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  marginLeft: 'auto',  
-  [theme.breakpoints.up('xs')]: {
-    maxWidth: '320px',
-  },
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '550px',
-  },
-  [theme.breakpoints.up('md')]: {
-    maxWidth: '400px',
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: '350px',
-  },
-}));
-
-const TodoContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--gray)`,
-  boxShadow: theme.shadows[4],
-  borderRadius: '8px',
-  padding: theme.spacing(2),
-  margin: '20px 10px 30px 0',
-  width: '100%',
-  textAlign: 'center',
-  marginLeft: 'auto',  
-  [theme.breakpoints.up('xs')]: {
-    maxWidth: '320px',
-  },
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '550px',
-  },
-  [theme.breakpoints.up('md')]: {
-    maxWidth: '400px',
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: '350px',
-  },
-}));
 
 const drawerWidth = 240;
 
@@ -151,7 +100,6 @@ const Dashboard = () => {
   const [currentComponent, setCurrentComponent] = useState('dashboard');
   const [anchorEl, setAnchorEl] = useState(null);
   const [hoverText, setHoverText] = useState('');
-  const [isLogoutPopover, setIsLogoutPopover] = useState(false); 
 
   const handleDrawerToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -181,7 +129,6 @@ const Dashboard = () => {
             >
               Welcome, Admin!
             </Typography>
-
             <Typography
               sx={{
                 fontWeight: 'normal',
@@ -193,9 +140,7 @@ const Dashboard = () => {
             >
               Have a good day!
             </Typography>
-
             <Hero />
-
             <Typography
               sx={{
                 fontWeight: '500',
@@ -207,19 +152,10 @@ const Dashboard = () => {
             >
               Modules
             </Typography>
-
           </>
-
-
-
-
-
-
-
         );
     } 
   };
-  
 
   const handlePopoverOpen = (event, text, isLogout = false) => {
     if (!open) { 
@@ -236,6 +172,7 @@ const Dashboard = () => {
   };
 
   const openPopover = Boolean(anchorEl);
+  const id = openPopover ? 'simple-popover' : undefined;
 
   return (
     <Box sx={{ display: 'flex', bgcolor:'#fafafa' }}>
@@ -293,172 +230,59 @@ const Dashboard = () => {
                   {index === 4 && <AccountsIcon />}
                   {index === 5 && <AccountCircleIcon />}
                 </ListItemIcon>
-
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
 
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={handleLogout}
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? 'initial' : 'center',
-              px: 2.5,
-              color: 'var(--wht)',
-              '&:hover': {
-                backgroundColor: 'rgba(153, 30, 86, 0.7)', 
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout} onMouseEnter={(event) => handlePopoverOpen(event, 'Logout', true)} onMouseLeave={handlePopoverClose}>
+              <ListItemIcon>
+                <LogoutIcon sx={{ color: 'var(--wht)' }} />
+              </ListItemIcon>
+              <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+        </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -5, ml: -23, bgcolor:'#fafafa'}}>
+      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
         <DrawerHeader />
-
-        <Box sx={{ flexGrow: 1,  }}>
-        <Grid container spacing={2}>
-
-        <Grid item xs={12} md={7} lg={8.3} sx={{ }}>
-              {renderComponent()}
-            </Grid>
-
-
-            <Grid item xs={12} md={5} lg={3.7} >
-              <Box sx={{ display: 'flex', flexDirection: 'column', }}>
-                <CalendarContainer sx={{ bgcolor:'var(--wht)',
-                 mr: {xs:'80px', sm:'80px', md:'10px', lg:'120px'}, 
-                     padding: {
-                      xs: '10px 1px',
-                      sm: '10px 1px',
-                      md: '30px 5px',
-                      lg: '30px 3px',
-                    }
-
-                    
-
-                }}>
-                <Typography
-  variant="h6"
-  sx={{
-    marginBottom: 1,
-    fontSize: {
-      xs: '30px',
-      sm: '30px',
-      md: '30px',
-      lg: '30px',
-    },
-  }}
->
-  Calendar
-</Typography>
-
-
-
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DateCalendar
-    defaultValue={dayjs()}
-    sx={{
-      '.MuiPickersDay-root': {
         
-        '&.Mui-selected': {
-          backgroundColor: 'var(--pri)', 
-          color: 'white',
-        },
-        '&.MuiPickersDay-today': {
-          borderColor: 'var(--pri)', 
-        },
-        '&.MuiPickersDay-today.Mui-selected': {
-          backgroundColor: 'var(--pri)', 
-        },
-      },
-    }}
-  />
-</LocalizationProvider>
-            </CalendarContainer>
-
-
-            <TodoContainer sx={{ bgcolor:'var(--wht)',
-            mr: {xs:'80px', sm:'80px', md:'10px', lg:'120px'}, 
-                  padding: {
-                    xs: '20px 5px',
-                    sm: '20px 5px',
-                    md: '30px 5px',
-                    lg: '30px 3px',
-                  }
-                  
-                }}>
-                  <Typography variant="h6" sx={{ marginBottom: 1,
-                    fontSize: {
-                      xs: '30px',
-                      sm: '30px',
-                      md: '30px',
-                      lg: '30px',
-                    }
-                   }}>
-                    To Do List
-                  </Typography>
-
-              <List>
-                <ListItem>
-                  <ListItemText primary="To Grade" />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Due assignments for Class A" />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Due assignments for Class B" />
-                </ListItem>
-              </List>
-            </TodoContainer>
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <Box>{renderComponent()}</Box>
+          </Grid>
+          <Grid item xs={2}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <Box sx={{ flex: 1, mb: 2 }}>
+                <Calendar /> {/* Calendar Component */}
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <ToDoList /> {/* To Do List Component */}
+              </Box>
             </Box>
           </Grid>
         </Grid>
+
+        <Popover
+          id={id}
+          open={openPopover}
+          anchorEl={anchorEl}
+          onClose={handlePopoverClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Typography sx={{ p: 1 }}>{hoverText}</Typography>
+        </Popover>
       </Box>
-
-      <Popover
-  id={openPopover ? 'mouse-over-popover' : undefined}
-  sx={{
-    pointerEvents: 'none',
-  }}
-  open={openPopover}
-  anchorEl={anchorEl}
-  onClose={handlePopoverClose}
-  disableRestoreFocus
-  anchorOrigin={{
-    vertical: 'bottom', // Position the popover below the anchor element
-    horizontal: 'right', // Align to the right of the anchor element
-  }}
-  transformOrigin={{
-    vertical: 'top', // Align the top of the popover to the top of the anchor
-    horizontal: 'right', // Align the right side of the popover to the right side of the anchor
-  }}
->
-  <Typography
-    sx={{
-      p: 1,
-      bgcolor: 'var(--sec)',
-      color: 'var(--wht)',
-      textAlign: 'end', // Corrected from align to textAlign
-    }}
-  >
-    {isLogoutPopover ? 'Logout' : hoverText}
-  </Typography>
-</Popover>
-
-    </Box>
     </Box>
   );
 };
 
 export default Dashboard;
+
 
 
