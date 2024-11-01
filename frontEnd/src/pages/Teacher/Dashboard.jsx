@@ -13,8 +13,8 @@ import {
   ListItemText,
   AppBar as MuiAppBar,
   Drawer as MuiDrawer,
-  Grid,
   Popover,
+  Grid,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -35,10 +35,63 @@ import Modules from './Modules';
 import Classes from './Classes';
 import Accounts from './Accounts';
 import Profile from './Profile';
-import Calendar from '../../components/Widgets/Calendar.jsx'; // Import your Calendar component
-import ToDoList from '../../components/Widgets/TodoList.jsx'; // Import your To Do List component
 import logo from '/src/assets/mcalogo.png';
 import Hero from '../../components/Widgets/Hero';
+
+import TodoList from '../../components/Widgets/TodoList';
+import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import Calendar from '../../components/Widgets/Calendar';
+
+
+const CalendarContainer = styled(Box)(({ theme }) => ({
+  border: `1px solid var(--gray)`,
+  boxShadow: theme.shadows[4],
+  borderRadius: '8px',
+  padding: theme.spacing(1),
+  margin: '2px 10px',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginLeft: 'auto',  
+  [theme.breakpoints.up('xs')]: {
+    maxWidth: '320px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '550px',
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: '400px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: '350px',
+  },
+}));
+
+const TodoContainer = styled(Box)(({ theme }) => ({
+  border: `1px solid var(--gray)`,
+  boxShadow: theme.shadows[4],
+  borderRadius: '8px',
+  padding: theme.spacing(2),
+  margin: '20px 10px 30px 0',
+  width: '100%',
+  textAlign: 'center',
+  marginLeft: 'auto',  
+  [theme.breakpoints.up('xs')]: {
+    maxWidth: '320px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '550px',
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: '400px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: '350px',
+  },
+}));
 
 const drawerWidth = 240;
 
@@ -100,6 +153,7 @@ const Dashboard = () => {
   const [currentComponent, setCurrentComponent] = useState('dashboard');
   const [anchorEl, setAnchorEl] = useState(null);
   const [hoverText, setHoverText] = useState('');
+  const [isLogoutPopover, setIsLogoutPopover] = useState(false); 
 
   const handleDrawerToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -129,6 +183,7 @@ const Dashboard = () => {
             >
               Welcome, Admin!
             </Typography>
+
             <Typography
               sx={{
                 fontWeight: 'normal',
@@ -140,7 +195,9 @@ const Dashboard = () => {
             >
               Have a good day!
             </Typography>
+
             <Hero />
+
             <Typography
               sx={{
                 fontWeight: '500',
@@ -152,10 +209,19 @@ const Dashboard = () => {
             >
               Modules
             </Typography>
+
           </>
+
+
+
+
+
+
+
         );
     } 
   };
+  
 
   const handlePopoverOpen = (event, text, isLogout = false) => {
     if (!open) { 
@@ -172,9 +238,9 @@ const Dashboard = () => {
   };
 
   const openPopover = Boolean(anchorEl);
-  const id = openPopover ? 'simple-popover' : undefined;
 
   return (
+    <>
     <Box sx={{ display: 'flex', bgcolor:'#fafafa' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ backgroundColor: 'var(--wht)' }}>
@@ -230,59 +296,99 @@ const Dashboard = () => {
                   {index === 4 && <AccountsIcon />}
                   {index === 5 && <AccountCircleIcon />}
                 </ListItemIcon>
+
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
 
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton onClick={handleLogout} onMouseEnter={(event) => handlePopoverOpen(event, 'Logout', true)} onMouseLeave={handlePopoverClose}>
-              <ListItemIcon>
-                <LogoutIcon sx={{ color: 'var(--wht)' }} />
-              </ListItemIcon>
-              <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        </List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+              color: 'var(--wht)',
+              '&:hover': {
+                backgroundColor: 'rgba(153, 30, 86, 0.7)', 
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -6, ml: -26, bgcolor:'#fafafa'}}>
         <DrawerHeader />
-        
-        <Grid container spacing={2}>
-          <Grid item xs={10}>
-            <Box>{renderComponent()}</Box>
-          </Grid>
-          <Grid item xs={2}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <Box sx={{ flex: 1, mb: 2 }}>
-                <Calendar /> {/* Calendar Component */}
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <ToDoList /> {/* To Do List Component */}
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
 
-        <Popover
-          id={id}
-          open={openPopover}
-          anchorEl={anchorEl}
-          onClose={handlePopoverClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Typography sx={{ p: 1 }}>{hoverText}</Typography>
-        </Popover>
+        <Box sx={{ flexGrow: 1,  }}>
+        <Grid container spacing={2} fullWidth>
+
+        <Grid item xs={12} md={7} lg={9} sx={{ }}>
+              {renderComponent()}
+            </Grid>
+
+
+            <Grid
+  item
+  xs={12}
+  md={5}
+  lg={3}
+  sx={{
+    background: "gray",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center', // Centers content horizontally
+    justifyContent: 'center', // Centers content vertically
+  }}
+>
+  <Calendar/>
+  <TodoList/>
+</Grid>
+
+        </Grid>
       </Box>
+
+      <Popover
+  id={openPopover ? 'mouse-over-popover' : undefined}
+  sx={{
+    pointerEvents: 'none',
+  }}
+  open={openPopover}
+  anchorEl={anchorEl}
+  onClose={handlePopoverClose}
+  disableRestoreFocus
+  anchorOrigin={{
+    vertical: 'bottom', // Position the popover below the anchor element
+    horizontal: 'right', // Align to the right of the anchor element
+  }}
+  transformOrigin={{
+    vertical: 'top', // Align the top of the popover to the top of the anchor
+    horizontal: 'right', // Align the right side of the popover to the right side of the anchor
+  }}
+>
+  <Typography
+    sx={{
+      p: 1,
+      bgcolor: 'var(--sec)',
+      color: 'var(--wht)',
+      textAlign: 'end', // Corrected from align to textAlign
+    }}
+  >
+    {isLogoutPopover ? 'Logout' : hoverText}
+  </Typography>
+</Popover>
+
     </Box>
+    </Box>
+    </>
   );
 };
 
 export default Dashboard;
-
-
-

@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Widgets/Navbar";
 import Footer from "./components/Widgets/Footer";
+import Schedule from "./pages/Teacher/Schedule";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Faqs from "./pages/Faqs";
