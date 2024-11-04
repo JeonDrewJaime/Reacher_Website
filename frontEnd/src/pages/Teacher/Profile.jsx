@@ -63,8 +63,8 @@ function stringAvatar(name) {
 }
 
 function Profile() {
-  const userName = 'John Doe';
-  const userRole = 'Teacher';
+  const userName = 'Andrea Teves';
+  const userRole = 'Admin';
 
   return (
     <>

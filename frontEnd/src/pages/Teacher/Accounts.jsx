@@ -6,10 +6,10 @@ import EditIcon from '@mui/icons-material/Edit';
 function Accounts() {
 
   const initialAccounts = [
-    { id: 1, email: 'alice@example.com', status: 'Active' },
-    { id: 2, email: 'bob@example.com', status: 'Inactive' },
-    { id: 3, email: 'charlie@example.com', status: 'Active' },
-    { id: 4, email: 'david@example.com', status: 'Inactive' },
+    { id: 1, email: 'miasco@gmail.com', status: 'Active' },
+    { id: 2, email: 'musa@gmail.com', status: 'Inactive' },
+    { id: 3, email: 'posca@gmail.com', status: 'Active' },
+    { id: 4, email: 'teves@gmail.com', status: 'Inactive' },
   ];
 
   const [accounts, setAccounts] = useState(initialAccounts);
@@ -35,7 +35,7 @@ function Accounts() {
 
   return (
     <Box p={2}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Accounts
       </Typography>
       

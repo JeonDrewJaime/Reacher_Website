@@ -16,6 +16,8 @@ const GlobalStyles = createGlobalStyle`
     --drk-pnk: #181018;
     --wht: #FFFFFF;
     --gray: #9698a6;
+    --light-gray: #CCCCCC;
+    --light-pnk: #F3E2F3;
     --gre: #d0e8a9;
     --drk-gre: #1f5967;
     --blu: #a6dae5;

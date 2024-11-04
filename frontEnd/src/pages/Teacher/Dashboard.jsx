@@ -39,59 +39,8 @@ import logo from '/src/assets/mcalogo.png';
 import Hero from '../../components/Widgets/Hero';
 
 import TodoList from '../../components/Widgets/TodoList';
-import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
 import Calendar from '../../components/Widgets/Calendar';
 
-
-const CalendarContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--gray)`,
-  boxShadow: theme.shadows[4],
-  borderRadius: '8px',
-  padding: theme.spacing(1),
-  margin: '2px 10px',
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  marginLeft: 'auto',  
-  [theme.breakpoints.up('xs')]: {
-    maxWidth: '320px',
-  },
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '550px',
-  },
-  [theme.breakpoints.up('md')]: {
-    maxWidth: '400px',
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: '350px',
-  },
-}));
-
-const TodoContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--gray)`,
-  boxShadow: theme.shadows[4],
-  borderRadius: '8px',
-  padding: theme.spacing(2),
-  margin: '20px 10px 30px 0',
-  width: '100%',
-  textAlign: 'center',
-  marginLeft: 'auto',  
-  [theme.breakpoints.up('xs')]: {
-    maxWidth: '320px',
-  },
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '550px',
-  },
-  [theme.breakpoints.up('md')]: {
-    maxWidth: '400px',
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: '350px',
-  },
-}));
 
 const drawerWidth = 240;
 
@@ -198,25 +147,8 @@ const Dashboard = () => {
 
             <Hero />
 
-            <Typography
-              sx={{
-                fontWeight: '500',
-                color: 'var(--blk)',
-                fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '30px' },
-                ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
-                mt: {xs:'30px', sm:'30px', md:'40px', lg:'50px'}
-              }}
-            >
-              Modules
-            </Typography>
 
           </>
-
-
-
-
-
-
 
         );
     } 
@@ -330,26 +262,32 @@ const Dashboard = () => {
         <Box sx={{ flexGrow: 1,  }}>
         <Grid container spacing={2} fullWidth>
 
-        <Grid item xs={12} md={7} lg={9} sx={{ }}>
+        <Grid item xs={12} md={7} lg={9} sx={{ 
+          background: '#faf1f9', 
+          alignItems: 'center',
+          justifyContent: 'center', }}>
               {renderComponent()}
             </Grid>
 
 
             <Grid
-  item
-  xs={12}
-  md={5}
-  lg={3}
-  sx={{
-    background: "gray",
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center', // Centers content horizontally
-    justifyContent: 'center', // Centers content vertically
+              item
+              xs={12}
+              md={5}
+             lg={3}
+              sx={{
+                 background: "#fdf8fc",
+                display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center', // Centers content horizontally
+                     justifyContent: 'center', // Centers content vertically
   }}
 >
+
   <Calendar/>
   <TodoList/>
+
+
 </Grid>
 
         </Grid>
@@ -365,12 +303,12 @@ const Dashboard = () => {
   onClose={handlePopoverClose}
   disableRestoreFocus
   anchorOrigin={{
-    vertical: 'bottom', // Position the popover below the anchor element
-    horizontal: 'right', // Align to the right of the anchor element
+    vertical: 'bottom', 
+    horizontal: 'right', 
   }}
   transformOrigin={{
-    vertical: 'top', // Align the top of the popover to the top of the anchor
-    horizontal: 'right', // Align the right side of the popover to the right side of the anchor
+    vertical: 'top',
+    horizontal: 'right', 
   }}
 >
   <Typography
@@ -378,7 +316,7 @@ const Dashboard = () => {
       p: 1,
       bgcolor: 'var(--sec)',
       color: 'var(--wht)',
-      textAlign: 'end', // Corrected from align to textAlign
+      textAlign: 'end', 
     }}
   >
     {isLogoutPopover ? 'Logout' : hoverText}

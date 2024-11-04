@@ -11,31 +11,27 @@ import img3 from '../../assets/3.png';
 const images = [img3, img2, img1];
 
 const OuterContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--gray)`,
-  boxShadow: theme.shadows[4],
+  border: `1px solid var(--light-gray)`,
   backgroundColor: 'var(--wht)',
-  padding: '30px', 
-  borderRadius: '8px',
+  padding: '20px',
+  borderRadius: '6px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   margin: '40px auto',
-  maxWidth: '90%',
-  width: '100%',
-  
+  width: 'auto',        
   [theme.breakpoints.up('xs')]: {
-    maxWidth: '100%', 
-    padding: '15px', 
+    maxWidth: '450px',
   },
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '850px',
+    maxWidth: '700px',
   },
   [theme.breakpoints.up('md')]: {
-    maxWidth: '900px',
+    maxWidth: '480px',
   },
   [theme.breakpoints.up('lg')]: {
     maxWidth: '1100px',
-  },
+  },   
 }));
 
 const HeroContainer = styled(Box)(({ theme }) => ({
@@ -44,28 +40,23 @@ const HeroContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   position: 'relative',
   overflow: 'hidden',
-  backgroundSize: 'contain',
+  backgroundSize: 'cover',
   backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat', // Prevents image repetition
-
-  minHeight: '300px', // Reduced height for balanced aspect ratio
-  width: '100%',
+  backgroundRepeat: 'no-repeat',
+  backgroundColor: '#f0f0f0',  
+  width: '100%',        
   [theme.breakpoints.up('xs')]: {
-    maxWidth: '100%',
-    minHeight: '300px',
+    minHeight: '200px',
   },
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '800px',
-    minHeight: '350px',
+    minHeight: '320px',
   },
   [theme.breakpoints.up('md')]: {
-    maxWidth: '900px',
-    minHeight: '400px',
+    minHeight: '200px',
   },
   [theme.breakpoints.up('lg')]: {
-    maxWidth: '1000px',
-    minHeight: '450px',
-  },
+    minHeight: '500px',
+  },    
 }));
 
 function Hero() {
@@ -84,11 +75,30 @@ function Hero() {
   return (
     <OuterContainer>
       <HeroContainer sx={{ backgroundImage: `url(${images[currentImageIndex]})` }}>
-        {/* Navigation Arrows */}
-        <IconButton sx={{ position: 'absolute', top: '50%', left: '20px', color: 'white', bgcolor:'rgba(128, 128, 128, 0.5)', zIndex: 10 }} onClick={goToPreviousImage}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '10px',
+            color: 'white',
+            bgcolor: 'rgba(128, 128, 128, 0.5)',
+            transform: 'translateY(-50%)',
+          }}
+          onClick={goToPreviousImage}
+        >
           <ArrowBackIosIcon />
         </IconButton>
-        <IconButton sx={{ position: 'absolute', top: '50%', right: '20px', color: 'white', bgcolor:'rgba(128, 128, 128, 0.5)', zIndex: 10 }} onClick={goToNextImage}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            right: '10px',
+            color: 'white',
+            bgcolor: 'rgba(128, 128, 128, 0.5)',
+            transform: 'translateY(-50%)',
+          }}
+          onClick={goToNextImage}
+        >
           <ArrowForwardIosIcon />
         </IconButton>
       </HeroContainer>
@@ -97,6 +107,4 @@ function Hero() {
 }
 
 export default Hero;
-
-
 

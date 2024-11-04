@@ -3,27 +3,24 @@ import { List, ListItem, ListItemText, TextField, Typography, Box, InputAdornmen
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 
 function Classes() {
 
   const initialAccounts = [
-    { id: 1, email: 'alice@example.com', status: 'Active' },
-    { id: 2, email: 'bob@example.com', status: 'Inactive' },
-    { id: 3, email: 'charlie@example.com', status: 'Active' },
-    { id: 4, email: 'david@example.com', status: 'Inactive' },
+    { id: 1, email: 'miasco@gmail.com', status: 'Active' },
+    { id: 2, email: 'musa@gmail.com', status: 'Inactive' },
+    { id: 3, email: 'posca@gmail.com', status: 'Active' },
+    { id: 4, email: 'teves@gmail.com', status: 'Inactive' },
   ];
 
   const [accounts, setAccounts] = useState(initialAccounts);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
-
 
   const filteredAccounts = accounts.filter((account) => {
     const matchesSearch = account.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -31,31 +28,34 @@ function Classes() {
     return matchesSearch && matchesStatus;
   });
 
-
   const handleStatusFilterChange = (event) => {
     setFilterStatus(event.target.value);
   };
 
-
-
-
   return (
     <Box p={2}>
-      <Typography variant="h4" gutterBottom>
-        Classes
-      </Typography>
+     
       
-      <Box sx={{ padding: 2 }}>
-      {/* Header with Add Button */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-       
-        <Fab color="primary" aria-label="add" onClick={() => setOpenForm(true)}>
+      {/* Header with Add Button in top-right of the section */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5">Class List</Typography>
+        
+        <Fab 
+          size="small"
+          sx={{
+            color: 'var(--wht)',
+            bgcolor: 'var(--pri)',
+            '&:hover': {
+              backgroundColor: 'var(--sec)',
+              color: '#FFFFFF',
+            },
+          }}
+          aria-label="add" 
+          onClick={() => console.log('Open add form')}
+        >
           <AddIcon />
         </Fab>
       </Box>
-
-      </Box>
-
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
@@ -75,7 +75,6 @@ function Classes() {
           }}
         />
         
-
         <Select
           value={filterStatus}
           onChange={handleStatusFilterChange}

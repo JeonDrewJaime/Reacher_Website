@@ -39,7 +39,14 @@ export default function Modules() {
       {/* Header with Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5">Modules</Typography>
-        <Fab color="primary" aria-label="add" onClick={() => setOpenForm(true)}>
+        <Fab size="small" sx={{
+            color: 'var(--wht)',
+            bgcolor: 'var(--pri)',
+            '&:hover': {
+              backgroundColor: 'var(--sec)',
+              color: '#FFFFFF',
+            },
+          }}  aria-label="add" onClick={() => setOpenForm(true)}>
           <AddIcon />
         </Fab>
       </Box>
@@ -81,7 +88,7 @@ export default function Modules() {
       {/* Displaying Modules */}
       <Box sx={{ marginTop: 4, display: 'grid', gap: 2 }}>
         {modules.map((module, index) => (
-          <Card key={index} sx={{ maxWidth: 345 }}>
+          <Card key={index} sx={{ maxWidth: 1200 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>{module.title}</Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>{module.description}</Typography>
