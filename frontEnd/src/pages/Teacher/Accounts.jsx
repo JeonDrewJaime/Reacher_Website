@@ -1,26 +1,28 @@
+// Accounts.js
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, TextField, Typography, Box, InputAdornment, Select, MenuItem, IconButton } from '@mui/material';
+import { List, ListItem, ListItemText, TextField, Typography, Box, InputAdornment, Select, MenuItem, IconButton, Fab } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
+import AccountForm from './AccountForm';
+import AccountDetails from './AccountDetails';
 
 function Accounts() {
-
   const initialAccounts = [
-    { id: 1, email: 'miasco@gmail.com', status: 'Active' },
-    { id: 2, email: 'musa@gmail.com', status: 'Inactive' },
-    { id: 3, email: 'posca@gmail.com', status: 'Active' },
-    { id: 4, email: 'teves@gmail.com', status: 'Inactive' },
+    { id: 1, name: 'Mia', email: 'miasco@gmail.com', role: 'Admin', status: 'Enabled' },
+    { id: 2, name: 'Musa', email: 'musa@gmail.com', role: 'User', status: 'Disabled' },
+    { id: 3, name: 'Posca', email: 'posca@gmail.com', role: 'User', status: 'Enabled' },
+    { id: 4, name: 'Teves', email: 'teves@gmail.com', role: 'Admin', status: 'Disabled' },
   ];
 
   const [accounts, setAccounts] = useState(initialAccounts);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
+  const handleSearch = (e) => setSearchTerm(e.target.value);
+  const handleStatusFilterChange = (e) => setFilterStatus(e.target.value);
 
   const filteredAccounts = accounts.filter((account) => {
     const matchesSearch = account.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -28,17 +30,32 @@ function Accounts() {
     return matchesSearch && matchesStatus;
   });
 
-
-  const handleStatusFilterChange = (event) => {
-    setFilterStatus(event.target.value);
+  const handleFormSubmit = (newAccount) => {
+    setAccounts((prev) => [...prev, { ...newAccount, id: prev.length + 1 }]);
   };
 
+  // If an account is selected, render the AccountDetails component
+  if (selectedAccount) {
+    return <AccountDetails account={selectedAccount} onBack={() => setSelectedAccount(null)} />;
+  }
+
   return (
-    <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Accounts
-      </Typography>
-      
+    <Box sx={{ padding: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h5" gutterBottom>Accounts</Typography>
+        <Fab
+          size="small"
+          sx={{
+            color: 'var(--wht)',
+            bgcolor: 'var(--pri)',
+            '&:hover': { backgroundColor: 'var(--sec)', color: '#FFFFFF' },
+          }}
+          aria-label="add"
+          onClick={() => setOpenForm(true)}
+        >
+          <AddIcon />
+        </Fab>
+      </Box>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
@@ -57,8 +74,6 @@ function Accounts() {
             ),
           }}
         />
-        
-
         <Select
           value={filterStatus}
           onChange={handleStatusFilterChange}
@@ -66,28 +81,30 @@ function Accounts() {
           sx={{ minWidth: 180 }}
         >
           <MenuItem value="all">Show All</MenuItem>
-          <MenuItem value="Active">Show Active</MenuItem>
-          <MenuItem value="Inactive">Show Inactive</MenuItem>
+          <MenuItem value="Enabled">Show Enabled</MenuItem>
+          <MenuItem value="Disabled">Show Disabled</MenuItem>
         </Select>
       </Box>
 
-      {/* Account List */}
       <List>
         {filteredAccounts.map((account) => (
-          <ListItem 
-            key={account.id} 
-            secondaryAction={
-              <IconButton edge="end" aria-label="edit" onClick={() => console.log(`Edit ${account.email}`)}>
-                <EditIcon />
-              </IconButton>
-            }
+          <ListItem
+            key={account.id}
+            onClick={() => setSelectedAccount(account)}  // Select account on click
+            button
           >
             <ListItemText primary={account.email} secondary={`Status: ${account.status}`} />
+            <IconButton edge="end" aria-label="edit" onClick={() => console.log(`Edit ${account.email}`)}>
+              <EditIcon />
+            </IconButton>
           </ListItem>
         ))}
       </List>
+
+      <AccountForm open={openForm} onClose={() => setOpenForm(false)} onSubmit={handleFormSubmit} />
     </Box>
   );
 }
 
 export default Accounts;
+
