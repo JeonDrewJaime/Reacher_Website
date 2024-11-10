@@ -13,7 +13,7 @@ function Faqs() {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    height: 'calc(100vh - 64px)', // Adjusted to account for the header
+    height: 'calc(100vh - 64px)', 
     width: '100%',
     margin: 0,
     padding: 0,
@@ -22,7 +22,7 @@ function Faqs() {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Changed to flex-start to align items at the top
+    justifyContent: 'flex-start', 
   };
 
   const [expanded, setExpanded] = React.useState(false);
@@ -155,7 +155,6 @@ function Faqs() {
 }
 
 export default Faqs;
-
 
 
 

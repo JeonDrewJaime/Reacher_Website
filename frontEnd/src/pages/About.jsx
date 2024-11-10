@@ -6,7 +6,7 @@ import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import GlobalStyles from '../GlobalStyles';
 import OneTrickPonyFont from '../assets/fonts/OneTrickPony.ttf'; 
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // Import the AOS styles
+import 'aos/dist/aos.css'; 
 
 const About = () => {
   useEffect(() => {
@@ -61,7 +61,8 @@ const About = () => {
           padding: '20px',
         }}
       >
-        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center', marginTop:'3%', marginBottom:'3%', }} data-aos="fade-up" data-aos-anchor-placement="top-center">
+        <Box sx={{ flex: 1, paddingRight: '20px', textAlign: 'center', marginTop:'3%', marginBottom:'3%', }}
+         data-aos="fade-up" data-aos-anchor-placement="top-center">
           <Typography
             variant="h2"
             sx={{
@@ -236,9 +237,6 @@ const About = () => {
   </Box>
 </Box>
 
-
-
-   
     </div>
   );
 };

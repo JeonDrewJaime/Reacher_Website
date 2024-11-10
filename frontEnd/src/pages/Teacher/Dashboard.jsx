@@ -146,8 +146,6 @@ const Dashboard = () => {
             </Typography>
 
             <Hero />
-
-
           </>
 
         );
@@ -279,17 +277,13 @@ const Dashboard = () => {
                  background: "#fdf8fc",
                 display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center', // Centers content horizontally
-                     justifyContent: 'center', // Centers content vertically
+                  alignItems: 'center', 
+                     justifyContent: 'center', 
   }}
 >
-
   <Calendar/>
   <TodoList/>
-
-
 </Grid>
-
         </Grid>
       </Box>
 

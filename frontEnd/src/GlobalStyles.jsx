@@ -22,6 +22,9 @@ const GlobalStyles = createGlobalStyle`
     --drk-gre: #1f5967;
     --blu: #a6dae5;
     --footer-bg: #70bc4f;
+    --violet: #8e56ff;
+    --orange: #f8941e;
+    --aqua: #1ab69d;
 
     /* Font Size Variables */
     --big-font: 4.5rem;

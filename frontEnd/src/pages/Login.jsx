@@ -1,41 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import logo from '../assets/mcalogo.png';
-import {loginSchema} from '../validationSchema'; // Import validation schema
+import schoolBg from '../assets/schoolbg.jpg';
+import { loginSchema } from '../validationSchema';
 
 function Login() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState('');
 
-  // Formik hook
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    validationSchema: loginSchema, // Yup schema for validation
+    validationSchema: loginSchema,
     onSubmit: (values) => {
       console.log(values);
-      // You can handle login logic here or navigate to dashboard
       navigate('/dashboard');
     },
   });
 
+  const handleForgotPassword = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSendPassword = () => {
+    console.log('Sending password to:', email);
+    setOpen(false);
+  };
+
   return (
     <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'var(--blu)',
-        padding: '20px',
-      }}
+    sx={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: `linear-gradient(rgba(135, 206, 235, 0.5), rgba(135, 206, 220, 1)), url(${schoolBg})`, 
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      padding: '20px',
+    }}
+    
     >
       <Box
         sx={{
@@ -83,7 +106,6 @@ function Login() {
           autoComplete="off"
           onSubmit={formik.handleSubmit}
         >
-          {/* Username Field */}
           <TextField
             id="username"
             label="Username"
@@ -97,14 +119,13 @@ function Login() {
             helperText={formik.touched.username && formik.errors.username}
           />
 
-          {/* Password Field */}
           <TextField
             id="password"
             label="Password"
             type="password"
             variant="outlined"
             fullWidth
-            sx={{ marginBottom: '40px' }}
+            sx={{ marginBottom: '25px' }}
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -112,7 +133,6 @@ function Login() {
             helperText={formik.touched.password && formik.errors.password}
           />
 
-          {/* Login Button */}
           <Button
             variant="contained"
             fullWidth
@@ -123,15 +143,57 @@ function Login() {
               '&:hover': {
                 backgroundColor: '#FE81B9',
               },
+              marginBottom: '10px',
             }}
             type="submit"
           >
             Login
           </Button>
+
+          <Button
+            variant="text"
+            fullWidth
+            onClick={handleForgotPassword}
+            sx={{
+              color: 'var(--blk)',
+            }}
+          >
+            Forgot Password?
+          </Button>
         </Box>
       </Box>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Forgot Password</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter your email address below, and we’ll send you instructions to reset your password.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="email"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSendPassword} color="primary">
+            Send Password
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
 
 export default Login;
+
+

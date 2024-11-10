@@ -49,7 +49,7 @@ const TodoList = () => {
             md: '24px',
             lg: '24px',
           },
-          color: 'var(--blk)', // Consistent text color for flat style
+          color: 'var(--blk)', 
           textAlign: 'center',
         }}
       >
