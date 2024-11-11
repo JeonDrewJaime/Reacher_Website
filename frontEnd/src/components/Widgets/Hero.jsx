@@ -18,7 +18,7 @@ const OuterContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  margin: '40px auto',
+  margin: '20px auto',
   width: 'auto',        
   [theme.breakpoints.up('xs')]: {
     maxWidth: '450px',

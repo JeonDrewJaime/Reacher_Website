@@ -1,109 +1,215 @@
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, TextField, Typography, Box, InputAdornment, Select, MenuItem, IconButton } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Typography, Avatar, Button, Fab, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import Fab from '@mui/material/Fab';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CreateNewSectionDialog from '../Teacher/CreateSectionDialog'; 
+import ModifySectionDialog from '../Teacher/ModifySectionDialog'; 
+import StudentList from '../Teacher/StudentList';  
+
+const initialClasses = [
+  { id: 1, sectionName: 'Section 1', teacher: 'Mia P. Miasco', students: ['John Doe', 'Jane Smith'] },
+  { id: 2, sectionName: 'Section 2', teacher: 'Musa L. Musa', students: ['Tom Green'] },
+];
 
 function Classes() {
+  const [classes, setClasses] = useState(initialClasses);
+  const [openForm, setOpenForm] = useState(false);
+  const [openModifyForm, setOpenModifyForm] = useState(false);
+  const [newSection, setNewSection] = useState({ sectionName: '', teacher: '', students: [] });
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [teacherNames] = useState(['Mia P. Miasco', 'Musa L. Musa', 'Posca C. Posca']);
+  const [allStudents] = useState(['John Doe', 'Jane Smith', 'Tom Green', 'Andrea Teves', 'Lucas Lee', 'Emma Brown']);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const initialAccounts = [
-    { id: 1, email: 'miasco@gmail.com', status: 'Active' },
-    { id: 2, email: 'musa@gmail.com', status: 'Inactive' },
-    { id: 3, email: 'posca@gmail.com', status: 'Active' },
-    { id: 4, email: 'teves@gmail.com', status: 'Inactive' },
-  ];
+  // State to control visibility of the Student List
+  const [openStudentList, setOpenStudentList] = useState(false);
 
-  const [accounts, setAccounts] = useState(initialAccounts);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const handleCreateSection = () => {
+    if (newSection.sectionName && newSection.teacher) {
+      setClasses([...classes, { ...newSection, id: classes.length + 1 }]);
+      setOpenForm(false);
+    } else {
+      alert('Please fill in all fields.');
+    }
   };
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || account.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+  const handleStudentSelection = (event) => {
+    const selected = event.target.value;
+    setSelectedStudents(selected);
+    setNewSection({ ...newSection, students: selected });
+  };
 
-  const handleStatusFilterChange = (event) => {
-    setFilterStatus(event.target.value);
+  const handleMenuOpen = (event, section) => {
+    setSelectedSection(section);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenModifyForm = (cls) => {
+    setSelectedSection(cls);
+    setNewSection({ ...cls });
+    setSelectedStudents(cls.students);
+    setOpenModifyForm(true);
+    handleMenuClose();
+  };
+
+  const handleModifySection = () => {
+    setClasses(classes.map((cls) => (cls.id === selectedSection.id ? { ...cls, ...newSection, students: selectedStudents } : cls)));
+    setOpenModifyForm(false);
+  };
+
+  const handleDelete = (id) => {
+    setClasses(classes.filter(cls => cls.id !== id));
+    handleMenuClose();
+  };
+
+  const assignedStudents = classes.flatMap(cls => cls.students);
+  const availableStudents = allStudents.filter(student => !assignedStudents.includes(student));
+
+  const handleShowStudentList = () => {
+    setOpenStudentList(true);  // Show the StudentList when button is clicked
   };
 
   return (
-    <Box p={2}>
-     
-      
-      {/* Header with Add Button in top-right of the section */}
+    <Box sx={{ padding: 4, mx: 3, mt: -3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5">Class List</Typography>
-        
-        <Fab 
+        <Typography variant="h4" sx={{ mb: 3 }}>Class List</Typography>
+        <Fab
           size="small"
           sx={{
             color: 'var(--wht)',
             bgcolor: 'var(--pri)',
-            '&:hover': {
-              backgroundColor: 'var(--sec)',
-              color: '#FFFFFF',
-            },
+            '&:hover': { backgroundColor: 'var(--sec)', color: '#FFFFFF' },
           }}
-          aria-label="add" 
-          onClick={() => console.log('Open add form')}
+          aria-label="add"
+          onClick={() => setOpenForm(true)} 
         >
           <AddIcon />
         </Fab>
       </Box>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <TextField
-          label="Search by email"
-          variant="outlined"
-          value={searchTerm}
-          onChange={handleSearch}
-          fullWidth
-          margin="normal"
-          sx={{ mr: 2 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        
-        <Select
-          value={filterStatus}
-          onChange={handleStatusFilterChange}
-          variant="outlined"
-          sx={{ minWidth: 180 }}
-        >
-          <MenuItem value="all">Show All</MenuItem>
-          <MenuItem value="Active">Show Active</MenuItem>
-          <MenuItem value="Inactive">Show Inactive</MenuItem>
-        </Select>
+      {/* Class List Display */}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+        {classes.map((cls) => (
+          <Box
+            key={cls.id}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
+              mb: 2,
+              p: 3,
+              width: 350, 
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              boxShadow: 3, 
+              position: 'relative', 
+              transition: 'transform 0.3s ease-in-out', 
+              '&:hover': {
+                transform: 'scale(1.02)', 
+                boxShadow: 2, 
+              },
+            }}
+          >
+            <IconButton
+              onClick={(event) => handleMenuOpen(event, cls)}
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                color: 'var(--gray)',
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+
+            <Avatar
+              sx={{
+                bgcolor: 'var(--pri)', 
+                fontSize: 16,
+                mt: 3,
+                mb: 1,
+                width: 40,
+                height: 40,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {cls.sectionName.split(' ')[1]}
+            </Avatar>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'var(--blk)', mb: 1 }}>
+              {cls.sectionName}
+            </Typography>
+            <Divider sx={{ width: '100%', mb: 1 }} />
+            <Typography variant="body2" sx={{ color: 'var(--blk)', mt: 2 }}>
+              {cls.teacher}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'var(--blk)', mb: 3, fontSize: '12px' }}>
+              Teacher
+            </Typography>
+            <Button
+              variant="outlined"
+              sx={{
+                borderRadius: 24,
+                color: 'var(--pri)',
+                mb: 2,
+                borderColor: 'var(--pri)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 105, 185, 0.1)',
+                },
+              }}
+              onClick={handleShowStudentList} // Show student list on click
+            >
+              Student List
+            </Button>
+
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={() => handleOpenModifyForm(cls)}>Modify</MenuItem>
+              <MenuItem onClick={() => handleDelete(cls.id)}>Delete</MenuItem>
+            </Menu>
+          </Box>
+        ))}
       </Box>
 
-      {/* Account List */}
-      <List>
-        {filteredAccounts.map((account) => (
-          <ListItem 
-            key={account.id} 
-            secondaryAction={
-              <IconButton edge="end" aria-label="edit" onClick={() => console.log(`Edit ${account.email}`)}>
-                <EditIcon />
-              </IconButton>
-            }
-          >
-            <ListItemText primary={account.email} secondary={`Status: ${account.status}`} />
-          </ListItem>
-        ))}
-      </List>
+      {/* Conditionally Render the Student List Component */}
+      {openStudentList && <StudentList students={selectedSection ? selectedSection.students : []} />}
+
+      {/* Dialog for creating a new section */}
+      <CreateNewSectionDialog
+        open={openForm}
+        onClose={() => setOpenForm(false)}
+        newSection={newSection}
+        setNewSection={setNewSection}
+        teacherNames={teacherNames}
+        handleCreateSection={handleCreateSection}
+      />
+
+      {/* Dialog for modifying a section */}
+      <ModifySectionDialog
+        open={openModifyForm}
+        onClose={() => setOpenModifyForm(false)}
+        newSection={newSection}
+        setNewSection={setNewSection}
+        selectedStudents={selectedStudents}
+        setSelectedStudents={setSelectedStudents}
+        availableStudents={availableStudents}
+        handleModifySection={handleModifySection}
+      />
     </Box>
   );
 }
 
 export default Classes;
+
+
+
+

@@ -139,7 +139,7 @@ const Dashboard = () => {
                 color: 'var(--gray)',
                 fontSize: { xs: '25px', sm: '25px', md: '30px', lg: '20px' },
                 ml: {xs:'30px', sm:'30px', md:'50px', lg:'80px'},
-                mb: {xs:'30px', sm:'30px', md:'40px', lg:'30px'}
+                mb: {xs:'30px', sm:'30px', md:'40px', lg:'20px'}
               }}
             >
               Have a good day!

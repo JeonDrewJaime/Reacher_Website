@@ -175,14 +175,15 @@ function Profile() {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Email Address"
-                    variant="outlined"
-                    value={email}
-                    disabled
-                  />
-                </Grid>
+  <TextField
+    fullWidth
+    label="Username"
+    variant="outlined"
+    value={userName}
+    disabled
+  />
+</Grid>
+
 
                 {/* Changeable Info (Birthday, Gender, Social Media) */}
                 <Grid item xs={12} sm={6}>
