@@ -5,7 +5,6 @@ import { accountSchema } from '../../validationSchema';
 
 function AccountForm({ open, onClose, onSubmit, existingEmails, existingLrns, userToEdit = null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
   const formik = useFormik({
     initialValues: {
       lastName: userToEdit ? userToEdit.lastName : '',
