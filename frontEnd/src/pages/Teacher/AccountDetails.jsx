@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress, Container, Divider } from '@mui/material';
+import { ref, set } from "firebase/database";
+import { db } from '../../../firebase'; // Assuming Firebase config is set
 
 function AccountDetails({ account, onBack, onSave }) {
   const [formData, setFormData] = useState(account);
@@ -13,9 +15,21 @@ function AccountDetails({ account, onBack, onSave }) {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSaving(true);
-    onSave(formData);
+
+    // Assuming onSave is passed as a function to update data in Firebase
+    try {
+      // Save updated account details to Firebase (modify the path as per your DB structure)
+      const accountRef = ref(db, 'users/' + account.id); // Account ID for updating the specific user
+      await set(accountRef, formData); // Updates the account data in Firebase
+
+      onSave(formData); // Inform the parent component that the save is successful
+      setIsSaving(false); // Stop loading indicator
+    } catch (error) {
+      console.error("Error saving account:", error);
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -34,7 +48,7 @@ function AccountDetails({ account, onBack, onSave }) {
             onChange={handleChange}
             fullWidth
           />
-          
+
           <TextField
             label="Email"
             name="email"
@@ -42,7 +56,7 @@ function AccountDetails({ account, onBack, onSave }) {
             onChange={handleChange}
             fullWidth
           />
-          
+
           <TextField
             label="Password"
             name="password"
@@ -105,7 +119,7 @@ function AccountDetails({ account, onBack, onSave }) {
           >
             Cancel
           </Button>
-          
+
           <Button
             onClick={handleSave}
             variant="outlined"
@@ -128,7 +142,3 @@ function AccountDetails({ account, onBack, onSave }) {
 }
 
 export default AccountDetails;
-
-
-
-

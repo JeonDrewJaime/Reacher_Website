@@ -6,7 +6,6 @@ class SuperAdminModel {
   async createUserWithAuth(userData) {
     try {
       const { email, password, firstName, lastName, role, status = 'active' } = userData; // Default status is 'active'
-
       // Create a user using Firebase Authentication
       const userRecord = await admin.auth().createUser({
         email,

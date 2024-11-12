@@ -12,22 +12,49 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import logo from '../assets/mcalogo.png';
 import schoolBg from '../assets/schoolbg.jpg';
-import { loginSchema } from '../validationSchema';
+import { signinSchema } from '../validationSchema';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../../firebase';
+import Snackbar from '@mui/material/Snackbar'; // Import Snackbar
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
 
 function Login() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar open state
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Message to display in Snackbar
+  const [loading, setLoading] = useState(false); // Loading state for CircularProgress
 
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    validationSchema: loginSchema,
-    onSubmit: (values) => {
-      console.log(values);
-      navigate('/dashboard');
+    validationSchema: signinSchema,  // Apply signinSchema here
+    onSubmit: async (values) => {
+      setLoading(true); // Start loading indicator
+      try {
+        console.log('Form submitted', values); // Check if form submission is triggered
+        await signInWithEmailAndPassword(auth, values.username, values.password);
+        console.log('Login successful');
+        navigate('/dashboard');
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          setAuthError('User not found. Please check your email and try again.');
+          setSnackbarMessage('User not found. Please check your email and try again.');
+        } else if (error.code === 'auth/wrong-password') {
+          setAuthError('Incorrect password. Please try again.');
+          setSnackbarMessage('Incorrect password. Please try again.');
+        } else {
+          setAuthError('Failed to login. Please try again.');
+          setSnackbarMessage('Failed to login. Please try again.');
+        }
+        setSnackbarOpen(true); // Open the Snackbar when there's an error
+        console.error('Authentication error:', error);
+      }
+      setLoading(false); // Stop loading indicator
     },
   });
 
@@ -39,26 +66,37 @@ function Login() {
     setOpen(false);
   };
 
-  const handleSendPassword = () => {
-    console.log('Sending password to:', email);
-    setOpen(false);
+  const handleSendPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log('Password reset email sent');
+      handleClose();
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      setAuthError('Failed to send password reset email. Please try again.');
+      setSnackbarMessage('Failed to send password reset email. Please try again.');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <Box
-    sx={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: `linear-gradient(rgba(135, 206, 235, 0.5), rgba(135, 206, 220, 1)), url(${schoolBg})`, 
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      padding: '20px',
-    }}
-    
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: `linear-gradient(rgba(135, 206, 235, 0.5), rgba(135, 206, 220, 1)), url(${schoolBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        padding: '20px',
+      }}
     >
       <Box
         sx={{
@@ -94,47 +132,39 @@ function Login() {
           WELCOME
         </Typography>
 
-        <Box
-          component="form"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-          }}
-          noValidate
-          autoComplete="off"
-          onSubmit={formik.handleSubmit}
-        >
+        {/* Login form */}
+        <form onSubmit={formik.handleSubmit}>
           <TextField
-            id="username"
-            label="Username"
-            variant="outlined"
             fullWidth
-            sx={{ marginBottom: '25px' }}
+            label="Username"
+            type="text"
+            variant="outlined"
+            margin="normal"
+            name="username"
             value={formik.values.username}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.username && Boolean(formik.errors.username)}
             helperText={formik.touched.username && formik.errors.username}
           />
-
           <TextField
-            id="password"
+            fullWidth
             label="Password"
             type="password"
             variant="outlined"
-            fullWidth
-            sx={{ marginBottom: '25px' }}
+            margin="normal"
+            name="password"
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
+            sx={{ mb: 4 }}
           />
-
+         
           <Button
             variant="contained"
+            color="primary"
             fullWidth
             sx={{
               backgroundColor: '#45b6d4',
@@ -145,22 +175,22 @@ function Login() {
               },
               marginBottom: '10px',
             }}
-            type="submit"
+            onClick={formik.handleSubmit}
+            disabled={loading} // Disable button when loading
           >
-            Login
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Log In'}
           </Button>
+        </form>
 
-          <Button
-            variant="text"
-            fullWidth
-            onClick={handleForgotPassword}
-            sx={{
-              color: 'var(--blk)',
-            }}
-          >
-            Forgot Password?
-          </Button>
-        </Box>
+        <Button
+          variant="text"
+          color="secondary"
+          fullWidth
+          sx={{ marginTop: '20px' }}
+          onClick={handleForgotPassword}
+        >
+          Forgot Password?
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={handleClose}>
@@ -190,10 +220,20 @@ function Login() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar for displaying errors */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{
+          backgroundColor: authError ? '#d32f2f' : '#4caf50', // Red for errors, Green for success
+        }}
+      />
     </Box>
   );
 }
 
 export default Login;
-
-

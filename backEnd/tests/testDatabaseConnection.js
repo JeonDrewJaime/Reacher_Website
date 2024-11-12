@@ -1,6 +1,6 @@
 // path/to/testRealtimeDatabaseFile.js
 import { ref, set, get } from "firebase/database";
-import { db } from "../../frontEnd/src/utils/firebase";
+import { db } from "../../frontEnd/firebase";
 
 
 export async function testRealtimeDatabase() {

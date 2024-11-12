@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, ListItemText, TextField, Typography, Box, InputAdornment, Select, MenuItem, IconButton, Fab, Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { db } from '../../../firebase'; // Import the firebase config
+import { ref, get, remove } from "firebase/database"; // Import Firebase methods
 import AccountForm from './AccountForm';
 import AccountDetails from './AccountDetails';
 
 function Accounts() {
-  const initialAccounts = [
-    { id: 1, name: 'Miasco, Mia P.', role: 'Admin', status: 'Enabled' },
-    { id: 2, name: 'Musa, Musa L.', role: 'Admin', status: 'Disabled' },
-    { id: 3, name: 'Posca, Posca C.', role: 'Student', status: 'Enabled' },
-    { id: 4, name: 'Teves, Andrea S.', role: 'Admin', status: 'Disabled' },
-  ];
-
-  const [accounts, setAccounts] = useState(initialAccounts);
+  const [accounts, setAccounts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [openForm, setOpenForm] = useState(false);
@@ -30,6 +25,31 @@ function Accounts() {
   const handleSearch = (e) => setSearchTerm(e.target.value);
   const handleStatusFilterChange = (e) => setFilterStatus(e.target.value);
 
+  // Fetch accounts from Firebase
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const accountsRef = ref(db, 'users'); // Assuming "users" is the node where accounts are stored
+      try {
+        const snapshot = await get(accountsRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const accountsArray = Object.keys(data).map(key => ({
+            id: key,
+            name: data[key].name || "Unknown", // Ensure a default name if not present
+            ...data[key],
+          }));
+          setAccounts(accountsArray);
+        } else {
+          console.log("No data available");
+        }
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
+
   const filteredAccounts = accounts.filter((account) => {
     const matchesSearch = account.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || account.status === filterStatus;
@@ -42,14 +62,26 @@ function Accounts() {
       alert('An account with this name already exists.');
       return;
     }
-    
+
     setAccounts((prev) => [...prev, { ...newAccount, id: prev.length + 1 }]);
     setOpenForm(false); // Close form on successful submission
   };
 
-  const handleDeleteAccount = () => {
-    setAccounts(accounts.filter(account => account.id !== accountToDelete.id));
-    setOpenDeletePrompt(false);
+  const handleDeleteAccount = async () => {
+    try {
+      // Reference to the account in Firebase based on its id
+      const accountRef = ref(db, `users/${accountToDelete.id}`);
+      
+      // Remove the account from Firebase
+      await remove(accountRef);
+
+      // Update the local state to remove the account
+      setAccounts((prev) => prev.filter(account => account.id !== accountToDelete.id));
+      setOpenDeletePrompt(false);
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      // Optionally, show an error message to the user
+    }
   };
 
   if (selectedAccount) {
@@ -170,9 +202,4 @@ function Accounts() {
     </Box>
   );
 }
-
 export default Accounts;
-
-
-
-

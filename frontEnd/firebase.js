@@ -4,7 +4,7 @@ import { getDatabase } from 'firebase/database'; // Import Realtime Database
 
 // Your Firebase configuration object from Firebase Console
 const firebaseConfig = {
-  piKey: "AIzaSyBBSoCvTzUnnRcGyE_Kfk30E6-4exHYaxU",
+  apiKey: "AIzaSyBBSoCvTzUnnRcGyE_Kfk30E6-4exHYaxU",
   authDomain: "reacher-latest.firebaseapp.com",
   databaseURL: "https://reacher-latest-default-rtdb.firebaseio.com",
   projectId: "reacher-latest",

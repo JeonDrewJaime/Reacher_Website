@@ -1,7 +1,7 @@
 const SuperAdminModel = require('../models/SuperAdminModel'); // Import the SuperAdminModel
 
 class SuperAdminController {
-  // Controller method to create a user
+
   async createUser(req, res) {
     try {
       // Get user data from the request body
@@ -16,8 +16,7 @@ class SuperAdminController {
         role,
         status, // Pass the status as part of the data
       });
-
-      // Send the response to the client
+    
       return res.status(201).json({
         success: response.success,
         message: response.message,
