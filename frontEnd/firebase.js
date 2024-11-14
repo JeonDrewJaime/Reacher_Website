@@ -1,24 +1,27 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth'; // Optional: If you use Firebase Authentication
-import { getDatabase } from 'firebase/database'; // Import Realtime Database
+import { getAuth } from 'firebase/auth';         // Optional: If using Firebase Authentication
+import { getDatabase } from 'firebase/database'; // For Firebase Realtime Database
+import { getStorage } from 'firebase/storage';   // Import Firebase Storage
 
-// Your Firebase configuration object from Firebase Console
+// Firebase configuration object from Firebase Console
 const firebaseConfig = {
   apiKey: "AIzaSyBBSoCvTzUnnRcGyE_Kfk30E6-4exHYaxU",
   authDomain: "reacher-latest.firebaseapp.com",
   databaseURL: "https://reacher-latest-default-rtdb.firebaseio.com",
   projectId: "reacher-latest",
-  storageBucket: "reacher-latest.firebasestorage.app",
+  storageBucket: "reacher-latest.appspot.com",  // Updated to match Firebase default storage bucket format
   messagingSenderId: "973827044242",
   appId: "1:973827044242:web:a8de0050a23efc679ac74b",
   measurementId: "G-ZQH28H6N3P"
 };
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services (optional)
-const auth = getAuth(app); // For Firebase Authentication
-const db = getDatabase(app); // Initialize Realtime Database
+// Initialize Firebase services
+const auth = getAuth(app);         // Firebase Authentication
+const db = getDatabase(app);       // Firebase Realtime Database
+const storage = getStorage(app);   // Firebase Storage
 
-export { app, auth, db }; // Export these to use in other parts of your app
+// Export Firebase services for use in other parts of your app
+export { app, auth, db, storage };

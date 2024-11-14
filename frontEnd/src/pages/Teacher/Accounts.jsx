@@ -8,6 +8,7 @@ import { db } from '../../../firebase'; // Import the firebase config
 import { ref, get, remove } from "firebase/database"; // Import Firebase methods
 import AccountForm from './AccountForm';
 import AccountDetails from './AccountDetails';
+import { getAuth } from "firebase/auth"; 
 
 function Accounts() {
   const [accounts, setAccounts] = useState([]);
@@ -153,7 +154,7 @@ function Accounts() {
               {account.name.charAt(0)}
             </Avatar>
             <ListItemText
-              primary={`${account.name.split(',')[0]}, ${account.name.split(',')[1]}`} // Last Name, First MI
+              primary={account.name} // Display only the full name
               secondary={`Role: ${account.role} | Status: ${account.status}`}
             />
             <IconButton

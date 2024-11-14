@@ -41,7 +41,6 @@ import Hero from '../../components/Widgets/Hero';
 import TodoList from '../../components/Widgets/TodoList';
 import Calendar from '../../components/Widgets/Calendar';
 
-
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -109,12 +108,15 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
+    // Clear session or auth-related data
+    localStorage.removeItem('authToken');  // Optionally clear other session data
+
+    // Redirect to the home page (or login page)
     navigate('/home');
   };
 
   const renderComponent = () => {
     switch (currentComponent) {
-      case 'schedule': return <Schedule />;
       case 'modules': return <Modules />;
       case 'classes': return <Classes />;
       case 'accounts': return <Accounts />;
@@ -147,11 +149,9 @@ const Dashboard = () => {
 
             <Hero />
           </>
-
         );
-    } 
+    }
   };
-  
 
   const handlePopoverOpen = (event, text, isLogout = false) => {
     if (!open) { 
@@ -203,12 +203,12 @@ const Dashboard = () => {
         </DrawerHeader>
 
         <List sx={{ flexGrow: 1 }}>
-          {['Dashboard', 'Schedule', 'Modules', 'Classes', 'Accounts', 'Profile'].map((text, index) => (
+          {['Dashboard',  'Modules', 'Classes', 'Accounts', 'Profile'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onMouseEnter={(event) => handlePopoverOpen(event, text)}
                 onMouseLeave={handlePopoverClose}
-                onClick={() => setCurrentComponent(['dashboard', 'schedule', 'modules', 'classes', 'accounts', 'profile'][index])}
+                onClick={() => setCurrentComponent(['dashboard', 'modules', 'classes', 'accounts', 'profile'][index])}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -220,11 +220,10 @@ const Dashboard = () => {
               >
                 <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
                   {index === 0 && <DashboardIcon />}
-                  {index === 1 && <ScheduleIcon />}
-                  {index === 2 && <ModuleIcon />}
-                  {index === 3 && <ClassIcon />}
-                  {index === 4 && <AccountsIcon />}
-                  {index === 5 && <AccountCircleIcon />}
+                  {index === 1 && <ModuleIcon />}
+                  {index === 2 && <ClassIcon />}
+                  {index === 3 && <AccountsIcon />}
+                  {index === 4 && <AccountCircleIcon />}
                 </ListItemIcon>
 
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
@@ -257,67 +256,47 @@ const Dashboard = () => {
       <Box component="main" sx={{ flexGrow: 1, pl: 3, mt: -6, ml: -26, bgcolor:'#fafafa'}}>
         <DrawerHeader />
 
-        <Box sx={{ flexGrow: 1,  }}>
-        <Grid container spacing={2} fullWidth>
-
-        <Grid item xs={12} md={7} lg={9} sx={{ 
-          background: '#faf1f9', 
-          alignItems: 'center',
-          justifyContent: 'center', }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2} fullWidth>
+            <Grid item xs={12} md={7} lg={9} sx={{ 
+              background: '#faf1f9', 
+              alignItems: 'center',
+              justifyContent: 'center', 
+            }}>
               {renderComponent()}
             </Grid>
 
+            <Grid item xs={12} md={5} lg={3} sx={{ background: "#fdf8fc", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Calendar />
+              <TodoList />
+            </Grid>
+          </Grid>
+        </Box>
 
-            <Grid
-              item
-              xs={12}
-              md={5}
-             lg={3}
-              sx={{
-                 background: "#fdf8fc",
-                display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center', 
-                     justifyContent: 'center', 
-  }}
->
-  <Calendar/>
-  <TodoList/>
-</Grid>
-        </Grid>
+        <Popover
+          id={openPopover ? 'mouse-over-popover' : undefined}
+          sx={{
+            pointerEvents: 'none',
+          }}
+          open={openPopover}
+          anchorEl={anchorEl}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
+          anchorOrigin={{
+            vertical: 'bottom', 
+            horizontal: 'right', 
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right', 
+          }}
+        >
+          <Typography sx={{ p: 1, bgcolor: 'var(--sec)', color: 'var(--wht)', textAlign: 'end' }}>
+            {isLogoutPopover ? 'Logout' : hoverText}
+          </Typography>
+        </Popover>
+
       </Box>
-
-      <Popover
-  id={openPopover ? 'mouse-over-popover' : undefined}
-  sx={{
-    pointerEvents: 'none',
-  }}
-  open={openPopover}
-  anchorEl={anchorEl}
-  onClose={handlePopoverClose}
-  disableRestoreFocus
-  anchorOrigin={{
-    vertical: 'bottom', 
-    horizontal: 'right', 
-  }}
-  transformOrigin={{
-    vertical: 'top',
-    horizontal: 'right', 
-  }}
->
-  <Typography
-    sx={{
-      p: 1,
-      bgcolor: 'var(--sec)',
-      color: 'var(--wht)',
-      textAlign: 'end', 
-    }}
-  >
-    {isLogoutPopover ? 'Logout' : hoverText}
-  </Typography>
-</Popover>
-
-    </Box>
     </Box>
     </>
   );

@@ -1,41 +1,71 @@
-import React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Divider, Button, TextField, Select, MenuItem, Checkbox, ListItemText, InputLabel, FormControl } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Box,
+} from '@mui/material';
+import { ref, onValue } from 'firebase/database';
+import { db } from '../../../firebase'; // Adjust path to where your firebase config is stored
 
 function ModifySectionDialog({
   open,
   onClose,
-  section = { sectionName: '', teacher: '', students: [] }, // Default to an empty object with expected properties
-  setSection,
-  teacherNames = [], // Default to empty array if not provided
-  studentNames = [], // Default to empty array if not provided
-  handleModifySection
+  newSection,
+  setNewSection,
+  handleModifySection,
 }) {
-  const handleStudentChange = (event) => {
-    const selectedStudents = event.target.value;
-    setSection({ ...section, students: selectedStudents });
+  const [teacherNames, setTeacherNames] = useState([]);  // State to hold the list of teachers
+
+  // Fetch teacher names from Firebase
+  useEffect(() => {
+    const teachersRef = ref(db, 'users');
+    onValue(teachersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const fetchedTeachers = Object.keys(data)
+          .filter((key) => data[key].role === 'Teacher') // Only fetch teachers
+          .map((key) => data[key].name);
+        setTeacherNames(fetchedTeachers);
+      }
+    });
+  }, []); // Only run once when the component is mounted
+
+  // Handle changes to the input fields
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewSection((prevState) => ({
+      ...prevState,
+      [name]: value,  // Update the name or teacher field based on user input
+    }));
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Modify Section</DialogTitle>
-      <Divider sx={{ mb: 2 }} />
-      <DialogContent sx={{ minWidth: 500 }}>
+      <DialogContent>
         <TextField
           label="Section Name"
-          variant="outlined"
+          name="sectionName"
+          value={newSection.sectionName}
+          onChange={handleInputChange}
           fullWidth
           sx={{ mb: 2 }}
-          value={section.sectionName} // Pre-populated with the current section name
-          onChange={(e) => setSection({ ...section, sectionName: e.target.value })}
         />
-
-        {/* Assign Teacher */}
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Assign Teacher</InputLabel>
+          <InputLabel>Teacher</InputLabel>
           <Select
-            value={section.teacher} // Pre-populated with the current teacher
-            onChange={(e) => setSection({ ...section, teacher: e.target.value })}
-            variant="outlined"
+            name="teacher"
+            value={newSection.teacher || ''}
+            onChange={handleInputChange}
+            label="Teacher"
           >
             {teacherNames.map((teacher) => (
               <MenuItem key={teacher} value={teacher}>
@@ -44,56 +74,17 @@ function ModifySectionDialog({
             ))}
           </Select>
         </FormControl>
-
-        {/* Select Students */}
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Select Students</InputLabel>
-          <Select
-            multiple
-            value={section.students || []} // Pre-populated with the current selected students
-            onChange={handleStudentChange}
-            variant="outlined"
-            renderValue={(selected) => selected.join(', ')} // Display selected students as a comma-separated list
-          >
-            {studentNames.map((student) => (
-              <MenuItem key={student} value={student}>
-                <Checkbox checked={section.students?.includes(student)} />
-                <ListItemText primary={student} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Divider Above Buttons */}
-        <Divider sx={{ mb: 2 }} />
       </DialogContent>
-      <DialogActions sx={{ mb: 2 }}>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
-          onClick={onClose}
-          variant="outlined"
-          sx={{
-            mr: 1,
-            borderColor: 'var(--sec)',
-            color: 'var(--sec)',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 162, 255, 0.1)',
-            },
+          onClick={() => {
+            handleModifySection();  // Handle the modify section action
+            onClose();  // Close the dialog after saving
           }}
+          color="primary"
         >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleModifySection}
-          variant="outlined"
-          sx={{
-            borderColor: 'var(--pri)',
-            color: 'var(--pri)',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 105, 185, 0.1)',
-            },
-          }}
-        >
-          Modify Section
+          Save Changes
         </Button>
       </DialogActions>
     </Dialog>

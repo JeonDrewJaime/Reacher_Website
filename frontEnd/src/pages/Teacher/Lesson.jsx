@@ -11,7 +11,6 @@ function Lesson({ lesson, onBack }) {
         <Typography variant="h5">Lesson</Typography>
         <Typography variant="h6">Section</Typography>
       </Box>
-
       <Typography variant="h6">{lesson.week}</Typography>
       <Typography variant="body1">{lesson.topic}</Typography>
 

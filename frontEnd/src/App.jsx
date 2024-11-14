@@ -7,7 +7,7 @@ import About from "./pages/About";
 import Faqs from "./pages/Faqs";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Teacher/Dashboard"; 
-import { testRealtimeDatabase } from "../../backEnd/tests/testDatabaseConnection";
+
 import "./general.css";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -15,10 +15,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient();
 
 const App = () => {
-  useEffect(() => {
-    // Call the test function when the component mounts
-    testRealtimeDatabase();
-  }, []);
+
   
   const location = useLocation();
   const isDashboardPage = location.pathname.includes('/dashboard');

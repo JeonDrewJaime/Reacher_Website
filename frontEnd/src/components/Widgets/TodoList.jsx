@@ -1,15 +1,18 @@
+//ganto nlng kesa to do list paki connect nlng hehe
+
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Edit, Visibility, Class, ArrowForward } from '@mui/icons-material';
 
 const TodoContainer = styled(Box)(({ theme }) => ({
-  border: `1px solid var(--light-gray)`, // Flat border without shadow
-  borderRadius: '6px', // Slightly rounded for a clean look
+  border: `1px solid var(--light-gray)`, 
+  borderRadius: '6px', 
   padding: theme.spacing(2),
   margin: '5px 10px 30px 0',
   width: '100%',
   textAlign: 'center',
-  backgroundColor: 'var(--wht)', // Background color
+  backgroundColor: 'var(--wht)', 
   [theme.breakpoints.up('xs')]: {
     maxWidth: '370px',
   },
@@ -53,18 +56,82 @@ const TodoList = () => {
           textAlign: 'center',
         }}
       >
-        To Do List
+        Shortcuts
       </Typography>
 
       <List sx={{ width: '100%', padding: 0 }}>
-        <ListItem sx={{ padding: '10px 0', borderBottom: `1px solid var(--light-gray)` }}>
-          <ListItemText primary="To Grade" sx={{ textAlign: 'center', color: 'var(--blk)' }} />
+        {/* Edit Profile */}
+        <ListItem
+          sx={{
+            padding: '10px 0',
+            borderBottom: `1px solid var(--light-gray)`,
+            display: 'flex',
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            '&:hover': {
+              backgroundColor: 'rgba(211, 211, 211, 0.3)', 
+            },
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Edit sx={{ color: 'var(--sec)', mr: 1 }} />
+            <ListItemText
+              primary="Edit Profile"
+              sx={{
+                color: 'var(--blk)', 
+              }}
+            />
+          </Box>
+          <ArrowForward sx={{ color: 'var(--sec)' }} /> {/* Add the ">" icon */}
         </ListItem>
-        <ListItem sx={{ padding: '10px 0', borderBottom: `1px solid var(--light-gray)` }}>
-          <ListItemText primary="Due assignments for Section 1" sx={{ textAlign: 'center', color: 'var(--blk)' }} />
+
+        {/* View Modules */}
+        <ListItem
+          sx={{
+            padding: '10px 0',
+            borderBottom: `1px solid var(--light-gray)`,
+            display: 'flex',
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            '&:hover': {
+              backgroundColor: 'rgba(211, 211, 211, 0.3)', 
+            },
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Visibility sx={{ color: 'var(--sec)', mr: 1 }} />
+            <ListItemText
+              primary="View Modules"
+              sx={{
+                color: 'var(--blk)',
+              }}
+            />
+          </Box>
+          <ArrowForward sx={{ color: 'var(--sec)' }} /> 
         </ListItem>
-        <ListItem sx={{ padding: '10px 0' }}>
-          <ListItemText primary="Due assignments for Section 2" sx={{ textAlign: 'center', color: 'var(--blk)' }} />
+
+        {/* Classes */}
+        <ListItem
+          sx={{
+            padding: '10px 0',
+            display: 'flex',
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            '&:hover': {
+              backgroundColor: 'rgba(211, 211, 211, 0.3)', 
+            },
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Class sx={{ color: 'var(--sec)', mr: 1 }} />
+            <ListItemText
+              primary="Classes"
+              sx={{
+                color: 'var(--blk)', 
+              }}
+            />
+          </Box>
+          <ArrowForward sx={{ color: 'var(--sec)' }} /> 
         </ListItem>
       </List>
     </TodoContainer>
