@@ -15,7 +15,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient();
 
 const App = () => {
-
   
   const location = useLocation();
   const isDashboardPage = location.pathname.includes('/dashboard');
@@ -27,9 +26,9 @@ const App = () => {
         <div style={{ flex: 1, overflowY: 'auto' }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/faqs" element={<Faqs />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<About />} />
+            <Route path="/" element={<Faqs />} />
+            <Route path="/" element={<Login />} />
             <Route path="/dashboard/*" element={<Dashboard />} /> 
           </Routes>
         </div>

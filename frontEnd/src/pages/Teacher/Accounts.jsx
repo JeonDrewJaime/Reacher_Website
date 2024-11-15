@@ -58,16 +58,27 @@ function Accounts() {
   });
 
   const handleFormSubmit = (newAccount) => {
-    const isDuplicate = accounts.some(account => account.name.toLowerCase() === newAccount.name.toLowerCase());
+    // Ensure the new account has a name property
+    if (!newAccount.name || newAccount.name.trim() === '') {
+ 
+      return;
+    }
+  
+    // Check for duplicate account by comparing names (case-insensitive)
+    const isDuplicate = accounts.some(account => {
+      const accountName = account.name ? account.name.toLowerCase() : ''; // Ensure name is valid
+      return accountName === newAccount.name.toLowerCase();
+    });
+  
     if (isDuplicate) {
       alert('An account with this name already exists.');
       return;
     }
-
+  
+    // Add the new account to the list
     setAccounts((prev) => [...prev, { ...newAccount, id: prev.length + 1 }]);
     setOpenForm(false); // Close form on successful submission
   };
-
   const handleDeleteAccount = async () => {
     try {
       // Reference to the account in Firebase based on its id

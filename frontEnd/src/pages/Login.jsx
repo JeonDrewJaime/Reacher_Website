@@ -136,7 +136,7 @@ function Login() {
         <form onSubmit={formik.handleSubmit}>
           <TextField
             fullWidth
-            label="Username"
+            label="Email"
             type="text"
             variant="outlined"
             margin="normal"

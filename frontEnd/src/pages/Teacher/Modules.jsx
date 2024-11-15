@@ -1,6 +1,5 @@
-//Modules.jsx to
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getDatabase, ref, onValue, remove, set, update, get } from 'firebase/database';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,7 +8,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import ModuleForm from './ModuleForm';
-//import week1Image from '../../assets/
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -17,42 +15,132 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import banner from '/src/assets/bgmodule.png';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Modules() {
-  const [modules, setModules] = useState([
-    {
-      title: "Sample Module",
-      description: "This is a sample initial description for a module.",
-      duration: "2 weeks",
-      image: "https://scontent.fmnl17-6.fna.fbcdn.net/v/t39.30808-6/277080045_5088535624536438_2564953737412717055_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGPkYQ8hY6h_KPjNZ0cvjJ57Zb0rdZCuIrtlvSt1kK4isqKAm4n-ocCcFpOlkSSCdKvYkkCvc4lEkwQSyzMeIJY&_nc_ohc=Th_wLUPfROgQ7kNvgFiXVtG&_nc_zt=23&_nc_ht=scontent.fmnl17-6.fna&_nc_gid=AGLCn_BXmtsFZs32DbHcXvL&oh=00_AYClTKs_ladgZZ67urSH-dqQzbDWZdP_5AobtDxaI5Tf2Q&oe=673B2BD7",
-    },
-  ]);
+  const [modules, setModules] = useState([]);
   const [openForm, setOpenForm] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [moduleToDelete, setModuleToDelete] = useState(null);
+  const [taskGiven, setTaskGiven] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Track severity (success/error)
+
+  useEffect(() => {
+    const db = getDatabase();
+    const modulesRef = ref(db, 'modules');
+
+    const unsubscribe = onValue(modulesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const modulesArray = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setModules(modulesArray);
+      } else {
+        setModules([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleAddModule = (newModule) => {
-    setModules([...modules, newModule]);
     setOpenForm(false);
   };
 
   const handleDeleteModule = () => {
-    setModules(modules.filter((module, index) => index !== moduleToDelete));
-    setOpenDeleteDialog(false);
+    if (moduleToDelete) {
+      const db = getDatabase();
+      const moduleRef = ref(db, `modules/${moduleToDelete}`);
+      remove(moduleRef)
+        .then(() => {
+          setSnackbarMessage('Module deleted successfully!');
+          setSnackbarSeverity('success'); // Set success severity
+          setSnackbarOpen(true);
+          setModuleToDelete(null);
+          setOpenDeleteDialog(false);
+        })
+        .catch((error) => {
+          console.error('Error deleting module:', error);
+          setSnackbarMessage('Error deleting module!');
+          setSnackbarSeverity('error'); // Set error severity
+          setSnackbarOpen(true);
+        });
+    }
   };
 
-  const handleOpenDeleteDialog = (index) => {
-    setModuleToDelete(index);
+  const handleOpenDeleteDialog = (id) => {
+    setModuleToDelete(id);
     setOpenDeleteDialog(true);
   };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
+    setModuleToDelete(null);
+  };
+
+  const handleGiveTask = async (module) => {
+    const db = getDatabase();
+    const taskGivenAt = new Date().toISOString();
+    
+    try {
+      const moduleRef = ref(db, `modules/${module.id}`);
+      await update(moduleRef, { taskGivenAt });
+
+      const sectionsRef = ref(db, 'sections');
+      const snapshot = await get(sectionsRef);
+      if (snapshot.exists()) {
+        const sectionsData = snapshot.val();
+        Object.keys(sectionsData).forEach((sectionId) => {
+          const section = sectionsData[sectionId];
+          if (section.students) {
+            Object.keys(section.students).forEach((studentId) => {
+              const studentModuleRef = ref(db, `sections/${sectionId}/students/${studentId}/module/${module.id}`);
+              set(studentModuleRef, {
+                ...module,
+                id: module.id,
+                taskGivenAt,
+              });
+            });
+          }
+        });
+        setSnackbarMessage('Task given to all students successfully!');
+        setSnackbarSeverity('success'); // Set success severity
+        setSnackbarOpen(true);
+      } else {
+        setSnackbarMessage('No sections found.');
+        setSnackbarSeverity('error'); // Set error severity
+        setSnackbarOpen(true);
+      }
+
+      setTaskGiven((prev) => ({
+        ...prev,
+        [module.id]: true,
+      }));
+    } catch (error) {
+      setSnackbarMessage('Error assigning task!');
+      setSnackbarSeverity('error'); // Set error severity
+      setSnackbarOpen(true);
+    }
+  };
+
+  const isButtonDisabled = (moduleStartDate) => {
+    const currentDate = new Date();
+    const startDate = new Date(moduleStartDate);
+    return currentDate < startDate;
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <Box sx={{ padding: 4, mx: 3, mt: -3 }}>
-      {/* Header with Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h4">Modules</Typography>
         <Fab
@@ -72,34 +160,24 @@ export default function Modules() {
         </Fab>
       </Box>
 
-      {/* Module Cards */}
-      <Box sx={{
-        marginTop: 4,
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-        gap: 2,
-      }}>
-        {modules.map((module, index) => (
-          <Card key={index} sx={{
-            maxWidth: 345,
-            position: 'relative',
-            borderRadius: '24px',
-            display: 'flex',
-            flexDirection: 'column',
-            transition: 'transform 0.3s ease-in-out', 
-              '&:hover': {
-                transform: 'scale(1.02)', 
-                boxShadow: 2, 
-              },
-          }}>
+      <Box
+        sx={{
+          marginTop: 4,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: 2,
+        }}
+      >
+        {modules.map((module) => (
+          <Card key={module.id} sx={{ maxWidth: 345, position: 'relative', borderRadius: '24px', display: 'flex', flexDirection: 'column' }}>
             <CardMedia
               component="img"
               height="140"
-              image={module.image || ""}
+              image={banner}
               alt={module.title}
               sx={{
                 bgcolor: module.image ? 'transparent' : '#8e56ff',
-                borderRadius: '24px 24px 0 0', 
+                borderRadius: '24px 24px 0 0',
               }}
             />
             <CardContent sx={{ flexGrow: 1 }}>
@@ -108,55 +186,54 @@ export default function Modules() {
               <Typography variant="body2">Duration: {module.duration}</Typography>
             </CardContent>
 
-            {/* "Give Task" Button */}
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: 2,
-            }}>
-              <Button variant="outlined" sx={{ borderRadius: '24px', color: 'var(--sec)',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 162, 255, 0.1)',
-            }, }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
+              <Button
+                variant="outlined"
+                sx={{
+                  borderRadius: '24px',
+                  color: 'var(--sec)',
+                  '&:hover': { backgroundColor: 'rgba(0, 162, 255, 0.1)' },
+                }}
+                onClick={() => handleGiveTask(module)}
+              
+              >
                 Give Task
               </Button>
             </Box>
 
-            {/* More Options Button */}
-            <IconButton
-              sx={{ position: 'absolute', top: 8, right: 8 }}
-              onClick={() => handleOpenDeleteDialog(index)}
-            >
-              <MoreVertIcon />
+            <IconButton sx={{ position: 'absolute', top: 8, right: 8 }} onClick={() => handleOpenDeleteDialog(module.id)}>
+              <DeleteIcon />
             </IconButton>
           </Card>
         ))}
       </Box>
 
-      {/* Module Form Dialog */}
       {openForm && (
-        <ModuleForm
-          open={openForm}
-          onClose={() => setOpenForm(false)}
-          onAddModule={handleAddModule}
-        />
+        <ModuleForm open={openForm} onClose={() => setOpenForm(false)} onAddModule={handleAddModule} />
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Delete Module</DialogTitle>
         <DialogContent>
           <Typography>Are you sure you want to delete this module?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteModule} color="secondary">
-            Delete
-          </Button>
+          <Button onClick={handleCloseDeleteDialog} color="primary">Cancel</Button>
+          <Button onClick={handleDeleteModule} color="secondary">Delete</Button>
         </DialogActions>
       </Dialog>
+
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{
+          backgroundColor: snackbarSeverity === 'success' ? 'green' : 'red',
+        }}
+      />
     </Box>
   );
 }

@@ -23,9 +23,8 @@ export const signinSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     middleInitial: Yup.string().max(1, 'Middle Initial must be one character'),
     role: Yup.string().required('Role is required'),
-    gender: Yup.string().required('Gender is required'),
     status: Yup.string().required('Status is required'),
-    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
     lrn: Yup.string()
       .length(12, 'LRN must be exactly 12 digits')

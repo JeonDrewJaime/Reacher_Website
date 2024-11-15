@@ -113,7 +113,6 @@ function CreateNewSectionDialog({
           onChange={(e) => setNewSection({ ...newSection, sectionName: e.target.value })}
         />
 
-        {/* Assign Teacher */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Assign Teacher</InputLabel>
           <Select

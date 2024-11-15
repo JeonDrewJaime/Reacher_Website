@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "reacher-latest.firebaseapp.com",
   databaseURL: "https://reacher-latest-default-rtdb.firebaseio.com",
   projectId: "reacher-latest",
-  storageBucket: "reacher-latest.appspot.com",  // Updated to match Firebase default storage bucket format
+  storageBucket: "reacher-latest.appspot.com",  
   messagingSenderId: "973827044242",
   appId: "1:973827044242:web:a8de0050a23efc679ac74b",
   measurementId: "G-ZQH28H6N3P"

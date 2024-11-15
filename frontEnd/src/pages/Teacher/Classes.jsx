@@ -15,29 +15,28 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CreateNewSectionDialog from '../Teacher/CreateSectionDialog';
 import ModifySectionDialog from '../Teacher/ModifySectionDialog';
 import StudentList from '../Teacher/StudentList';
+import AddStudents from '../Teacher/AddStudents';
 import { ref, set, remove, onValue } from 'firebase/database';
-import { db } from '../../../firebase'; // Adjust path to where your firebase config is stored
+import { db } from '../../../firebase';
 
 function Classes() {
   const [classes, setClasses] = useState([]);
   const [openForm, setOpenForm] = useState(false);
   const [openModifyForm, setOpenModifyForm] = useState(false);
+  const [openAddStudents, setOpenAddStudents] = useState(false);
   const [newSection, setNewSection] = useState({ sectionName: '', teacher: '', students: [] });
   const [selectedSection, setSelectedSection] = useState(null);
   const [teacherNames] = useState(['Mia P. Miasco', 'Musa L. Musa', 'Posca C. Posca']);
   const [anchorEl, setAnchorEl] = useState(null);
-
-  // State to control visibility of the Student List
   const [openStudentList, setOpenStudentList] = useState(false);
 
-  // Fetch classes from Firebase when component mounts
   useEffect(() => {
     const classesRef = ref(db, 'sections');
     onValue(classesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const fetchedClasses = Object.keys(data).map((key) => ({
-          id: key,  // Using Firebase generated key as the class ID
+          id: key,
           ...data[key],
         }));
         setClasses(fetchedClasses);
@@ -47,17 +46,19 @@ function Classes() {
 
   const handleCreateSection = () => {
     if (newSection.sectionName && newSection.teacher) {
-      const newSectionId = newSection.sectionName.replace(/\s+/g, '-').toLowerCase();  // Generate a simple ID based on section name
+      const newSectionId = newSection.sectionName.replace(/\s+/g, '-').toLowerCase();
       set(ref(db, 'sections/' + newSectionId), {
         sectionName: newSection.sectionName,
         teacher: newSection.teacher,
         students: newSection.students,
-      }).then(() => {
-        setOpenForm(false);
-        alert('Section created successfully!');
-      }).catch((error) => {
-        alert('Error creating section: ' + error.message);
-      });
+      })
+        .then(() => {
+          setOpenForm(false);
+          alert('Section created successfully!');
+        })
+        .catch((error) => {
+          alert('Error creating section: ' + error.message);
+        });
     } else {
       alert('Please fill in all fields.');
     }
@@ -65,36 +66,31 @@ function Classes() {
 
   const handleMenuOpen = (event, section) => {
     setSelectedSection(section);
-    setAnchorEl(event.currentTarget); // Open the menu
+    setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null); // Close the menu
+    setAnchorEl(null);
   };
 
   const handleOpenModifyForm = (cls) => {
     setSelectedSection(cls);
-    setNewSection({ ...cls }); // No need to update students
+    setNewSection({ ...cls });
     setOpenModifyForm(true);
     handleMenuClose();
   };
 
   const handleModifySection = () => {
     if (selectedSection) {
-      // 1. Create a reference to the section
       const sectionRef = ref(db, 'sections/' + selectedSection.id);
-
-      // 2. Prepare the updated section object without modifying students
       const updatedSection = {
         sectionName: newSection.sectionName,
         teacher: newSection.teacher,
-        students: selectedSection.students,  // Keep students as is (don't modify them)
+        students: selectedSection.students,
       };
 
-      // 3. Update the section data (section name, teacher)
       set(sectionRef, updatedSection)
         .then(() => {
-          // Successfully updated the section, including the students subcollection remains untouched
           setClasses(classes.map((cls) => (cls.id === selectedSection.id ? updatedSection : cls)));
           setOpenModifyForm(false);
           alert('Section modified successfully!');
@@ -106,30 +102,35 @@ function Classes() {
   };
 
   const handleDelete = (id) => {
-    const sectionRef = ref(db, 'sections/' + id);  // Reference to the section in Firebase
-    
-    // Remove the section from Firebase
+    const sectionRef = ref(db, 'sections/' + id);
+
     remove(sectionRef)
       .then(() => {
-        // Remove the deleted section from local state by filtering out the section with the matching ID
-        const updatedClasses = classes.filter(cls => cls.id !== id);
-        setClasses(updatedClasses);  // Set the updated list of classes
-        handleMenuClose();  // Close the menu after action
-        alert('Section deleted successfully!');  // Success message
+        const updatedClasses = classes.filter((cls) => cls.id !== id);
+        setClasses(updatedClasses);
+        handleMenuClose();
+        alert('Section deleted successfully!');
       })
       .catch((error) => {
-        // Handle errors if any
         alert('Error deleting section: ' + error.message);
       });
   };
 
   const handleShowStudentList = (cls) => {
     setSelectedSection(cls);
-    setOpenStudentList(true);  
+    setOpenStudentList(true);
   };
 
   const handleBackToClasses = () => {
-    setOpenStudentList(false);  
+    setOpenStudentList(false);
+  };
+
+  const handleFabClick = () => {
+    if (openStudentList) {
+      setOpenAddStudents(true); // Show AddStudents dialog if StudentList is open
+    } else {
+      setOpenForm(true); // Show CreateSection dialog if StudentList is not open
+    }
   };
 
   return (
@@ -144,18 +145,14 @@ function Classes() {
             '&:hover': { backgroundColor: 'var(--sec)', color: '#FFFFFF' },
           }}
           aria-label="add"
-          onClick={() => setOpenForm(true)} 
+          onClick={handleFabClick} // Set the Fab click handler
         >
           <AddIcon />
         </Fab>
       </Box>
 
-      {/* Conditionally Render the Student List */}
       {openStudentList ? (
-        <StudentList
-          selectedSection={selectedSection}
-          onBack={handleBackToClasses}  
-        />
+        <StudentList selectedSection={selectedSection} onBack={handleBackToClasses} />
       ) : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
           {classes.map((cls) => (
@@ -167,15 +164,15 @@ function Classes() {
                 flexDirection: 'column',
                 mb: 2,
                 p: 3,
-                width: 350, 
+                width: 350,
                 borderRadius: 2,
                 bgcolor: 'background.paper',
-                boxShadow: 3, 
-                position: 'relative', 
-                transition: 'transform 0.3s ease-in-out', 
+                boxShadow: 3,
+                position: 'relative',
+                transition: 'transform 0.3s ease-in-out',
                 '&:hover': {
-                  transform: 'scale(1.02)', 
-                  boxShadow: 2, 
+                  transform: 'scale(1.02)',
+                  boxShadow: 2,
                 },
               }}
             >
@@ -192,20 +189,22 @@ function Classes() {
               </IconButton>
 
               <Avatar
-                sx={{
-                  bgcolor: 'var(--pri)', 
-                  fontSize: 16,
-                  mt: 3,
-                  mb: 1,
-                  width: 40,
-                  height: 40,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {cls.sectionName.split(' ')[1]}
-              </Avatar>
+  sx={{
+    bgcolor: 'var(--pri)',
+    fontSize: 16,
+    mt: 3,
+    mb: 1,
+    width: 40,
+    height: 40,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+>
+  {/* Ensure cls.sectionName is defined and has a space before calling split */}
+  {cls.sectionName && cls.sectionName.split(' ')[1] ? cls.sectionName.split(' ')[1] : 'N/A'}
+</Avatar>
+
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'var(--blk)', mb: 1 }}>
                 {cls.sectionName}
               </Typography>
@@ -227,16 +226,12 @@ function Classes() {
                     backgroundColor: 'rgba(255, 105, 185, 0.1)',
                   },
                 }}
-                onClick={() => handleShowStudentList(cls)} 
+                onClick={() => handleShowStudentList(cls)}
               >
                 Student List
               </Button>
 
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItem onClick={() => handleOpenModifyForm(cls)}>Modify</MenuItem>
                 <MenuItem onClick={() => handleDelete(cls.id)}>Delete</MenuItem>
               </Menu>
@@ -245,7 +240,6 @@ function Classes() {
         </Box>
       )}
 
-      {/* Dialog for creating a new section */}
       <CreateNewSectionDialog
         open={openForm}
         onClose={() => setOpenForm(false)}
@@ -255,7 +249,6 @@ function Classes() {
         handleCreateSection={handleCreateSection}
       />
 
-      {/* Modify Section Dialog */}
       <ModifySectionDialog
         open={openModifyForm}
         onClose={() => setOpenModifyForm(false)}
@@ -264,6 +257,8 @@ function Classes() {
         teacherNames={teacherNames}
         handleModifySection={handleModifySection}
       />
+
+      <AddStudents open={openAddStudents} onClose={() => setOpenAddStudents(false)} />
     </Box>
   );
 }

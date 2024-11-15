@@ -17,21 +17,19 @@ const StudentList = ({ selectedSection, onBack }) => {
   const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
-  useEffect(() => {
-    // Set modulesPerPage based on screen size
-    if (isXs) {
-      setModulesPerPage(3);
-    } else if (isSm) {
-      setModulesPerPage(5);
-    } else if (isMd) {
-      setModulesPerPage(4);
-    } else if (isLg) {
-      setModulesPerPage(7);
-    }
+  // Handle FAB click - Update selected section
+  const handleFabClick = (section) => {
+    console.log("FAB clicked, section:", section); // Debugging log
+    // Set the selected section to update the table and fetch students for that section
+    setSelectedSection(section); 
+  };
 
+  // Fetch students for the selected section
+  useEffect(() => {
     if (selectedSection?.id) {
       const sectionRef = ref(db, `sections/${selectedSection.id}/students`);
       
+      // Fetch students from Firebase for the selected section
       get(sectionRef).then((snapshot) => {
         if (snapshot.exists()) {
           const studentList = [];
@@ -99,7 +97,7 @@ const StudentList = ({ selectedSection, onBack }) => {
             ))}
           </TableBody>
 
-          {/* Pagination for modules inside the table */}
+  
           <TableFooter>
             <TableRow>
               <TablePagination

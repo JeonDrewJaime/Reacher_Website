@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { styled, useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -30,6 +30,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getDatabase, ref, get } from 'firebase/database'; // Realtime Database imports
 import Schedule from './Schedule';
 import Modules from './Modules';
 import Classes from './Classes';
@@ -37,7 +39,6 @@ import Accounts from './Accounts';
 import Profile from './Profile';
 import logo from '/src/assets/mcalogo.png';
 import Hero from '../../components/Widgets/Hero';
-
 import TodoList from '../../components/Widgets/TodoList';
 import Calendar from '../../components/Widgets/Calendar';
 
@@ -99,9 +100,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [currentComponent, setCurrentComponent] = useState('dashboard');
+  const [userRole, setUserRole] = useState(null); // State for user role
   const [anchorEl, setAnchorEl] = useState(null);
   const [hoverText, setHoverText] = useState('');
-  const [isLogoutPopover, setIsLogoutPopover] = useState(false); 
+  const [isLogoutPopover, setIsLogoutPopover] = useState(false);
 
   const handleDrawerToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -114,6 +116,30 @@ const Dashboard = () => {
     // Redirect to the home page (or login page)
     navigate('/home');
   };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const db = getDatabase();
+    
+    // Listen for user authentication state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, fetch their role from the Realtime Database
+        const userRef = ref(db, 'users/' + user.uid); // Assuming users are stored in 'users' path
+        get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const role = snapshot.val().role;
+            setUserRole(role); // Set the role in state
+          }
+        }).catch((error) => {
+          console.error('Error fetching user data:', error);
+        });
+      } else {
+        // User is not signed in
+        setUserRole(null);
+      }
+    });
+  }, []);
 
   const renderComponent = () => {
     switch (currentComponent) {
@@ -203,12 +229,12 @@ const Dashboard = () => {
         </DrawerHeader>
 
         <List sx={{ flexGrow: 1 }}>
-          {['Dashboard',  'Modules', 'Classes', 'Accounts', 'Profile'].map((text, index) => (
+          {['Dashboard', 'Modules', 'Classes', 'Profile'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 onMouseEnter={(event) => handlePopoverOpen(event, text)}
                 onMouseLeave={handlePopoverClose}
-                onClick={() => setCurrentComponent(['dashboard', 'modules', 'classes', 'accounts', 'profile'][index])}
+                onClick={() => setCurrentComponent(['dashboard', 'modules', 'classes', 'profile'][index])}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -222,14 +248,35 @@ const Dashboard = () => {
                   {index === 0 && <DashboardIcon />}
                   {index === 1 && <ModuleIcon />}
                   {index === 2 && <ClassIcon />}
-                  {index === 3 && <AccountsIcon />}
-                  {index === 4 && <AccountCircleIcon />}
+                  {index === 3 && <AccountCircleIcon />}
                 </ListItemIcon>
 
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
+
+          {/* Conditionally render the "Accounts" button */}
+          {userRole !== 'Teacher' && (
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => setCurrentComponent('accounts')}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  color: 'var(--wht)',
+                  '&:hover': { backgroundColor: 'rgba(153, 30, 86, 0.7)' },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: 'var(--wht)' }}>
+                  <AccountsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Accounts" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          )}
+
         </List>
 
         <ListItem disablePadding>
@@ -295,7 +342,6 @@ const Dashboard = () => {
             {isLogoutPopover ? 'Logout' : hoverText}
           </Typography>
         </Popover>
-
       </Box>
     </Box>
     </>

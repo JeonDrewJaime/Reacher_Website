@@ -21,11 +21,14 @@ import LoginIcon from '@mui/icons-material/Login';
 import FAQsIcon from '@mui/icons-material/QuestionAnswer';
 import AboutIcon from '@mui/icons-material/Info';
 import HomeIcon from '@mui/icons-material/Home';
+import DownloadIcon from '@mui/icons-material/Download';
+import Download from '../../Download';
 import logo from '/src/assets/mcalogo.png';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Home from '../../pages/Home';
 import Faqs from '../../pages/Faqs';
 import About from '../../pages/About';
+
 import Button from '@mui/material/Button';
 import Login from '../../pages/Login';
 import GlobalStyles from '../../GlobalStyles';
@@ -78,6 +81,7 @@ const iconMapping = {
   '/home': <HomeIcon />,
   '/about': <AboutIcon />,
   '/faqs': <FAQsIcon />,
+  '/download': <DownloadIcon />,
   '/login': <LoginIcon />,
 };
 
@@ -139,7 +143,7 @@ export default function Navbar() {
 
             {!isMobile && (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', minHeight: '40px' }}>
-                {['/home', '/about', '/faqs'].map((path) => (
+                {['/home', '/about', '/faqs', '/download'].map((path) => (
                   <ListItem key={path} disablePadding>
                     <ListItemButton
                       component={Link}
@@ -182,7 +186,7 @@ export default function Navbar() {
                         },
                       }}
                     >
-                      {path === '/home' ? 'HOME' : path === '/about' ? 'ABOUT' : 'FAQs'}
+                      {path === '/home' ? 'HOME' : path === '/about' ? 'ABOUT' : path === '/faqs' ? 'FAQs' : 'DOWNLOAD'}
                     </ListItemButton>
                   </ListItem>
                 ))}
@@ -246,7 +250,7 @@ export default function Navbar() {
           </DrawerHeader>
           <Divider />
           <List>
-            {['/home', '/about', '/faqs', '/login'].map((path) => (
+            {['/home', '/about', '/faqs', '/download', '/login'].map((path) => (
               <ListItem key={path} disablePadding>
                 <ListItemButton
                   component={Link}
@@ -270,6 +274,7 @@ export default function Navbar() {
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/faqs" element={<Faqs />} />
+            <Route path="/download" element={<Download />} />
             <Route path="/login" element={<Login />} />
           </Routes>
           
