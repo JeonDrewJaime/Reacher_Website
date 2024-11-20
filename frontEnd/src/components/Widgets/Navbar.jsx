@@ -126,20 +126,29 @@ export default function Navbar() {
               </IconButton>
             )}
             <Typography
-              variant="h4"
-              noWrap
-              component="div"
-              sx={{
-                flexGrow: 1,
-                fontFamily: 'OneTrickPony, sans-serif',
-                fontSize: '2rem',
-                
-                color: '#FE81B9',
-              }}
-            >
-              <img src={logo} alt="Logo" style={{ width: '27px', height: '25px', marginRight: '8px', marginTop: '10px' }} />
-              Marychild Academy, Inc.
-            </Typography>
+  variant="h4"
+  noWrap
+  component="div"
+  sx={{
+    flexGrow: 1,
+    fontFamily: 'OneTrickPony, sans-serif',
+    fontSize: '2rem',
+    color: '#FE81B9',
+  }}
+>
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      width: '27px',
+      height: '25px',
+      marginRight: '8px',
+      marginTop: '10px',
+    }}
+  />
+  Marychild Academy, Inc.
+</Typography>
+
 
             {!isMobile && (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', minHeight: '40px' }}>

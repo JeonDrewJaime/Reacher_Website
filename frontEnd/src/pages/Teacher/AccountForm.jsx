@@ -57,13 +57,18 @@ function AccountForm({ open, onClose, onSubmit }) {
         middleInitial: '',
         email: '',
         password: '',
+        confirmPassword: '', 
         role: '',
         status: 'Enabled',
         lrn: '',
       });
     } catch (error) {
-      console.error("Error creating user: ", error);
-      setSnackbarMessage('Error creating account. Please try again.');
+      if (error instanceof Yup.ValidationError) {
+        setSnackbarMessage(error.errors.join(', '));
+      } else {
+        console.error("Error creating user: ", error);
+        setSnackbarMessage('Error creating account. Please try again.');
+      }
       setSnackbarOpen(true);
     } finally {
       setIsSubmitting(false);
@@ -129,6 +134,17 @@ function AccountForm({ open, onClose, onSubmit }) {
                   fullWidth
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  fullWidth
+                  />
+              </Grid>
+
               {formData.role === 'Student' && (
                 <Grid item xs={12}>
                   <TextField

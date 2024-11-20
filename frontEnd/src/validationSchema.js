@@ -11,12 +11,11 @@ export const loginSchema = Yup.object().shape({
 
 export const signinSchema = Yup.object().shape({
     username: Yup.string()
-      .required('Username is required'),
+      .required('Email is required'),
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters long'),
   });
-
 
   export const accountSchema = Yup.object().shape({
     lastName: Yup.string().required('Last Name is required'),
@@ -24,8 +23,13 @@ export const signinSchema = Yup.object().shape({
     middleInitial: Yup.string().max(1, 'Middle Initial must be one character'),
     role: Yup.string().required('Role is required'),
     status: Yup.string().required('Status is required'),
-    password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Confirm Password is required'), 
     lrn: Yup.string()
       .length(12, 'LRN must be exactly 12 digits')
       .matches(/^\d{12}$/, 'LRN must be a 12-digit number')
