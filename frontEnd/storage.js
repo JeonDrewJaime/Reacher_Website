@@ -5,14 +5,14 @@ import { getStorage } from 'firebase/storage';   // Import Firebase Storage
 
 // Firebase configuration object from Firebase Console
 const firebaseConfig = {
-  apiKey: "AIzaSyAEXpy-4j8RA-GGiP1kqjDOWYR7IWyx5B0",
-  authDomain: "enrollment-system-9e233.firebaseapp.com",
-  databaseURL: "https://enrollment-system-9e233-default-rtdb.firebaseio.com",
-  projectId: "enrollment-system-9e233",
-  storageBucket: "enrollment-system-9e233.appspot.com",
-  messagingSenderId: "332165817986",
-  appId: "1:332165817986:web:1192d3f3d061c349de369b",
-  measurementId: "G-YQKSVHQHYX"
+    apiKey: "AIzaSyAEXpy-4j8RA-GGiP1kqjDOWYR7IWyx5B0",
+    authDomain: "enrollment-system-9e233.firebaseapp.com",
+    databaseURL: "https://enrollment-system-9e233-default-rtdb.firebaseio.com",
+    projectId: "enrollment-system-9e233",
+    storageBucket: "enrollment-system-9e233.appspot.com",
+    messagingSenderId: "332165817986",
+    appId: "1:332165817986:web:1192d3f3d061c349de369b",
+    measurementId: "G-YQKSVHQHYX"
 };
 
 // Initialize Firebase app

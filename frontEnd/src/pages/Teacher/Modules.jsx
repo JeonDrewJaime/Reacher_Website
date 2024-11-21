@@ -18,6 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import banner from '/src/assets/bgmodule.png';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { List, ListItem, ListItemText, Link } from '@mui/material';
 
 export default function Modules() {
   const [modules, setModules] = useState([]);
@@ -184,6 +185,21 @@ export default function Modules() {
               <Typography variant="h6" gutterBottom>{module.title}</Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>{module.description}</Typography>
               <Typography variant="body2">Duration: {module.duration}</Typography>
+              {/* Render file URLs if available */}
+              {module.fileURLs && module.fileURLs.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>Attachments:</Typography>
+                  <List>
+                    {module.fileURLs.map((url, index) => (
+                      <ListItem key={index}>
+                        <ListItemText
+                          primary={<Link href={url} target="_blank" rel="noopener noreferrer" color="primary">View Attachment {index + 1}</Link>}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
             </CardContent>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
@@ -195,7 +211,7 @@ export default function Modules() {
                   '&:hover': { backgroundColor: 'rgba(0, 162, 255, 0.1)' },
                 }}
                 onClick={() => handleGiveTask(module)}
-              
+                disabled={isButtonDisabled(module.durationStart)}
               >
                 Give Task
               </Button>
@@ -222,7 +238,6 @@ export default function Modules() {
           <Button onClick={handleDeleteModule} color="secondary">Delete</Button>
         </DialogActions>
       </Dialog>
-
 
       <Snackbar
         open={snackbarOpen}

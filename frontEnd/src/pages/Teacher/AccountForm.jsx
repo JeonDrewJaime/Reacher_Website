@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Grid, Snackbar, Alert } from '@mui/material';
 import { auth, db } from '../../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';

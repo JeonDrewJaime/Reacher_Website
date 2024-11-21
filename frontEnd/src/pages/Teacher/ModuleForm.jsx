@@ -1,65 +1,16 @@
 import React, { useState } from 'react';
-import { getDatabase, ref, push } from 'firebase/database'; // Firebase Realtime Database functions
+import { getDatabase, ref, push } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { styled } from '@mui/material/styles';
+import { Box, Button, TextField, Divider, List, ListItem, ListItemText, Typography, Snackbar, Alert } from '@mui/material';
+import { CloudUpload as CloudUploadIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
-import { Box, Button, TextField, Divider } from '@mui/material';
 import 'react-datepicker/dist/react-datepicker.css';
-
-
-const DatePickerWrapper = styled(Box)(({ theme }) => ({
-  fontFamily: 'sans-serif', 
-  '& .react-datepicker': {
-    fontFamily: 'sans-serif !important', 
-    width: '100%', 
-    maxWidth: '100%', 
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  },
-  '& .react-datepicker__header': {
-    backgroundColor: 'var(--wht)',  
-    borderRadius: '8px 8px 0 0',
-    color: '#fff',
-    fontFamily: 'sans-serif !important', 
-    fontSize: '16px',
-    textAlign: 'center',
-  },
-  '& .react-datepicker__current-month': {
-    fontFamily: 'sans-serif !important', 
-    color: '#333 !important', 
-    fontSize: '18px',  
-  },
-  '& .react-datepicker__day, .react-datepicker__day-name': {
-    color: '#333',
-    fontFamily: 'sans-serif !important', 
-  },
-  '& .react-datepicker__day--selected': {
-    backgroundColor: 'var(--pri)',  
-    color: '#fff',
-  },
-  '& .react-datepicker__day:hover': {
-    backgroundColor: '#f1f1f1',
-    cursor: 'pointer',
-  },
-  '& .react-datepicker__input-container input': {
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
-    width: '350px',
-    fontSize: '14px',
-    marginTop: '8px',
-    backgroundColor: '#fafafa',
-    boxSizing: 'border-box',
-    fontFamily: 'sans-serif !important', 
-    '&:focus': {
-      outline: 'none',
-      borderColor: 'var(--gray)',  
-    },
-  },
-}));
+import { differenceInDays, differenceInHours, differenceInMinutes } from 'date-fns'; // Import date-fns for date calculations
+import { useDropzone } from 'react-dropzone'; // Import react-dropzone
 
 export default function ModuleForm({ open, onClose }) {
   const [moduleData, setModuleData] = useState({
@@ -67,7 +18,12 @@ export default function ModuleForm({ open, onClose }) {
     description: '',
     durationStart: null,
     durationEnd: null,
+    fileURLs: [], // Array to store uploaded file URLs
   });
+  const [files, setFiles] = useState([]); // Local file state to store selected files
+  const [uploading, setUploading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar open state
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message state
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -83,34 +39,81 @@ export default function ModuleForm({ open, onClose }) {
     }));
   };
 
-  const getDuration = () => {
-    if (moduleData.durationStart && moduleData.durationEnd) {
-      const diffTime = moduleData.durationEnd - moduleData.durationStart;
-      const diffDays = diffTime / (1000 * 3600 * 24); 
-      const weeks = Math.ceil(diffDays / 7); 
-
-      if (diffDays < 7) {
-        return `${diffDays} days`; 
-      } else {
-        return `${weeks} weeks`; 
+  const calculateDuration = (start, end) => {
+    if (!start || !end) return '';
+    
+    // Calculate the difference in days
+    const days = differenceInDays(end, start);
+    
+    // If days is 0, calculate hours
+    if (days === 0) {
+      const hours = differenceInHours(end, start);
+      if (hours === 0) {
+        const minutes = differenceInMinutes(end, start);
+        return minutes + ' minutes';
       }
+      return hours + ' hours';
     }
-    return '';
+
+    return days + ' days';
+  };
+
+  const handleDrop = (acceptedFiles) => {
+    setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+  };
+
+  const handleRemoveFile = (index) => {
+    const updatedFiles = files.filter((_, idx) => idx !== index);
+    setFiles(updatedFiles);
+  };
+
+  const uploadFiles = async () => {
+    if (files.length === 0) return [];
+
+    const uploadedFileURLs = [];
+    try {
+      setUploading(true);
+      const storage = getStorage();
+      for (const file of files) {
+        const fileRef = storageRef(storage, `modules/${file.name}`);
+        await uploadBytes(fileRef, file);
+        const downloadURL = await getDownloadURL(fileRef);
+        uploadedFileURLs.push(downloadURL);
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      alert('Failed to upload files.');
+    } finally {
+      setUploading(false);
+    }
+
+    return uploadedFileURLs;
   };
 
   const handleSubmit = async () => {
+    // Calculate duration before submitting
+    const duration = calculateDuration(moduleData.durationStart, moduleData.durationEnd);
+    
+    let fileURLs = [];
+    if (files.length > 0) {
+      fileURLs = await uploadFiles(); // Upload files and get their URLs
+      if (fileURLs.length === 0) return; // Abort if upload fails
+    }
+
     const newModule = {
       ...moduleData,
-      duration: getDuration(),
+      fileURLs,
+      duration: duration, // Add duration to the module data
       durationStart: moduleData.durationStart?.toISOString() || null,
       durationEnd: moduleData.durationEnd?.toISOString() || null,
     };
 
     try {
       const db = getDatabase();
-      const modulesRef = ref(db, 'modules'); // 'modules' collection in Realtime Database
+      const modulesRef = ref(db, 'modules');
       await push(modulesRef, newModule);
-      alert('Module added successfully!');
+      setSnackbarMessage('Module added successfully!');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error('Error adding module:', error);
       alert('Failed to add module. Please try again.');
@@ -121,41 +124,47 @@ export default function ModuleForm({ open, onClose }) {
       description: '',
       durationStart: null,
       durationEnd: null,
-      color: 'var(--pri)',  
+      fileURLs: [],
     });
+    setFiles([]);
     onClose();
   };
 
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="lg" // Makes the dialog larger
-      fullWidth // Ensures it takes up more horizontal space
-      sx={{ height: '100%', width: '100%' }} // Optionally adjust height and width to your needs
-    >
-      <DialogTitle>Add New Module</DialogTitle>
-      <Divider sx={{ mb: 2 }} />
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField label="Lesson Title" name="title" value={moduleData.title} onChange={handleInputChange} />
-        
-        {/* Modified description field */}
-        <TextField
-          label="Description"
-          name="description"
-          value={moduleData.description}
-          onChange={handleInputChange}
-          multiline
-          rows={4} // Adjust the number of rows (height) as needed
-          rowsMax={6} // Optionally limit the maximum number of rows
-        />
+  // React Dropzone Hook
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleDrop,
+    multiple: true,
+    accept: '.jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx', // Add file types you want to support
+  });
 
-        {/* Duration (Date Range Picker with Time) */}
-        <Box sx={{ marginTop: 2 }} fullWidth>
-          <label>Duration</label>
-          <DatePickerWrapper>
+  // Close snackbar after 3 seconds
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  return (
+    <>
+      <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+        <DialogTitle>Add New Module</DialogTitle>
+        <Divider sx={{ mb: 2 }} />
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextField
+            label="Lesson Title"
+            name="title"
+            value={moduleData.title}
+            onChange={handleInputChange}
+          />
+          <TextField
+            label="Description"
+            name="description"
+            value={moduleData.description}
+            onChange={handleInputChange}
+            multiline
+            rows={4}
+          />
+          <Box>
+            <label>Duration</label>
             <DatePicker
-              fullWidth
               selected={moduleData.durationStart}
               startDate={moduleData.durationStart}
               endDate={moduleData.durationEnd}
@@ -167,32 +176,72 @@ export default function ModuleForm({ open, onClose }) {
               isClearable
               placeholderText="Select date range and time"
               minDate={new Date()}
-              timeIntervals={15} 
-              showTimeSelectOnly={false}
-              timeCaption="Time"
-              wrapperClassName="custom-datepicker" 
+              timeIntervals={15}
+              wrapperClassName="custom-datepicker"
             />
-          </DatePickerWrapper>
-        </Box>
-      </DialogContent>
+          </Box>
 
-      <DialogActions>
-        <Button variant="outlined" onClick={onClose} 
-        sx={{borderColor: 'var(--sec)',
-            color: 'var(--sec)',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 162, 255, 0.1)',
-            },}}>Cancel</Button>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 1 }}>Drag & Drop Attachments Here</Typography>
+            <Box
+              {...getRootProps()}
+              sx={{
+                border: '2px dashed #1976d2',
+                padding: 2,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                cursor: 'pointer',
+                backgroundColor: '#f1f8ff',
+              }}
+            >
+              <input {...getInputProps()} />
+              <CloudUploadIcon sx={{ fontSize: 50, color: '#1976d2' }} />
+              <Typography variant="body2" sx={{ ml: 1 }}>or click to select files</Typography>
+            </Box>
+            <List>
+              {files.map((file, index) => (
+                <ListItem key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+                  <ListItemText primary={file.name} />
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                    onClick={() => handleRemoveFile(index)}
+                    startIcon={<DeleteIcon />}
+                  >
+                    Remove
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={handleSubmit}
+            disabled={uploading} // Disable during upload
+          >
+            {uploading ? 'Uploading...' : 'Add Module'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        <Button variant="outlined" onClick={handleSubmit} 
-        sx={{borderColor: 'var(--pri)',
-              color: 'var(--pri)',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 105, 185, 0.1)',
-              },}} >
-          Add Module
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {/* Snackbar for Success Message */}
+      <Snackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        autoHideDuration={3000} // Auto hide after 3 seconds
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Top center position
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
