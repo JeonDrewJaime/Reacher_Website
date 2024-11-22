@@ -28,7 +28,7 @@ export default function Modules() {
   const [taskGiven, setTaskGiven] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Track severity (success/error)
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); 
 
   useEffect(() => {
     const db = getDatabase();
@@ -61,7 +61,7 @@ export default function Modules() {
       remove(moduleRef)
         .then(() => {
           setSnackbarMessage('Module deleted successfully!');
-          setSnackbarSeverity('success'); // Set success severity
+          setSnackbarSeverity('success');
           setSnackbarOpen(true);
           setModuleToDelete(null);
           setOpenDeleteDialog(false);
@@ -69,7 +69,7 @@ export default function Modules() {
         .catch((error) => {
           console.error('Error deleting module:', error);
           setSnackbarMessage('Error deleting module!');
-          setSnackbarSeverity('error'); // Set error severity
+          setSnackbarSeverity('error'); 
           setSnackbarOpen(true);
         });
     }
@@ -111,11 +111,11 @@ export default function Modules() {
           }
         });
         setSnackbarMessage('Task given to all students successfully!');
-        setSnackbarSeverity('success'); // Set success severity
+        setSnackbarSeverity('success'); 
         setSnackbarOpen(true);
       } else {
         setSnackbarMessage('No sections found.');
-        setSnackbarSeverity('error'); // Set error severity
+        setSnackbarSeverity('error'); 
         setSnackbarOpen(true);
       }
 
@@ -125,7 +125,7 @@ export default function Modules() {
       }));
     } catch (error) {
       setSnackbarMessage('Error assigning task!');
-      setSnackbarSeverity('error'); // Set error severity
+      setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };
@@ -182,25 +182,50 @@ export default function Modules() {
               }}
             />
             <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom>{module.title}</Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>{module.description}</Typography>
-              <Typography variant="body2">Duration: {module.duration}</Typography>
-              {/* Render file URLs if available */}
+            <Typography variant="h6" gutterBottom>{module.title}</Typography>
+            <Typography 
+               variant="body2" 
+               color="text.secondary" 
+               gutterBottom 
+               sx={{ textAlign: 'justify' }}
+             >
+             {module.description}
+           </Typography>
+  
+          <Typography variant="body2">Duration: {module.duration}</Typography>
+          {/* Render file URLs if available */}
               {module.fileURLs && module.fileURLs.length > 0 && (
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>Attachments:</Typography>
-                  <List>
-                    {module.fileURLs.map((url, index) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={<Link href={url} target="_blank" rel="noopener noreferrer" color="primary">View Attachment {index + 1}</Link>}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              )}
-            </CardContent>
+               <Box sx={{ mt: 2 }}>
+      <Typography 
+        variant="body2" 
+        color="text.secondary" 
+        gutterBottom 
+        sx={{ textAlign: 'justify' }}
+      >
+        Attachments:
+      </Typography>
+      <List>
+        {module.fileURLs.map((url, index) => (
+          <ListItem key={index}>
+            <ListItemText
+              primary={
+                <Link 
+                  href={url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  color="primary"
+                >
+                  View Attachment {index + 1}
+                </Link>
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  )}
+</CardContent>
+
 
             <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
               <Button

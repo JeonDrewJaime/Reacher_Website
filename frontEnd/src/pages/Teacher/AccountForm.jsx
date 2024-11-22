@@ -26,6 +26,13 @@ function AccountForm({ open, onClose, onSubmit }) {
   };
 
   const handleSubmit = async () => {
+    // Check if password and confirmPassword match
+    if (formData.password !== formData.confirmPassword) {
+      setSnackbarMessage('Passwords do not match.');
+      setSnackbarOpen(true);
+      return;
+    }
+  
     if (!formData.email || !formData.password) {
       setSnackbarMessage('Email and password are required.');
       setSnackbarOpen(true);
@@ -36,7 +43,7 @@ function AccountForm({ open, onClose, onSubmit }) {
     const fullName = `${formData.firstName} ${formData.middleInitial ? formData.middleInitial + ". " : ''}${formData.lastName}`;
   
     try {
-      const email = formData.email
+      const email = formData.email;
       const userCredential = await createUserWithEmailAndPassword(auth, email, formData.password);
       const user = userCredential.user;
   
@@ -64,17 +71,22 @@ function AccountForm({ open, onClose, onSubmit }) {
         lrn: '',
       });
     } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        setSnackbarMessage(error.errors.join(', '));
+      console.error("Error creating user: ", error);
+      
+      if (error.code === 'auth/email-already-in-use') {
+        setSnackbarMessage('The email is already in use. Please use a different email address.');
       } else {
-        console.error("Error creating user: ", error);
         setSnackbarMessage('Error creating account. Please try again.');
       }
+      
       setSnackbarOpen(true);
-    } finally {
+    }
+    
+    finally {
       setIsSubmitting(false);
     }
   };
+  
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
