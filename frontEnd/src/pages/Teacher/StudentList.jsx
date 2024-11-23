@@ -1,124 +1,243 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination, Paper, Button } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Table,
+  TableContainer,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+  Button,
+  CircularProgress,
+  Collapse,
+  IconButton,
+  TableHead,
+} from '@mui/material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { ref, get } from 'firebase/database';
 import { db } from '../../../firebase'; // Import your Firebase config
 
 const StudentList = ({ selectedSection, onBack }) => {
   const [students, setStudents] = useState([]);
-  const [page, setPage] = useState(0);
-  const [modulesPerPage, setModulesPerPage] = useState(7);
-  const totalModules = 26;
+  const [modules, setModules] = useState([]);
 
-  // Responsive checks for different screen sizes
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
-  const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
-  // Handle FAB click - Update selected section
-  const handleFabClick = (section) => {
-    console.log("FAB clicked, section:", section); // Debugging log
-    // Set the selected section to update the table and fetch students for that section
-    setSelectedSection(section); 
-  };
-
-  // Fetch students for the selected section
+  // Fetch students and modules
   useEffect(() => {
     if (selectedSection?.id) {
-      const sectionRef = ref(db, `sections/${selectedSection.id}/students`);
-      
-      // Fetch students from Firebase for the selected section
-      get(sectionRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          const studentList = [];
-          snapshot.forEach((studentSnapshot) => {
-            const student = studentSnapshot.val();
-            studentList.push({
-              uid: studentSnapshot.key,
-              name: student.name,  // Get the student's name
-              grades: student.grades || Array.from({ length: totalModules }, () => 0), // Default to 0 if grades not found
+      const sectionRef = ref(db, `sections/${selectedSection.id}`);
+      get(sectionRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const sectionData = snapshot.val();
+            console.log("Fetched Section Data:", sectionData);
+
+            const studentList = [];
+            const modulesData = {};
+
+            Object.entries(sectionData.students || {}).forEach(([uid, studentData]) => {
+              const grades = Object.entries(studentData.module || {}).map(([moduleId, module]) => {
+                const scores = module.scores || {};
+                return {
+                  id: moduleId,
+                  title: module.title || "Unnamed Module",
+                  scores, // Include the scores in the grade object
+                };
+              });
+
+              studentList.push({
+                uid,
+                name: studentData.name,
+                grades,
+              });
+
+              Object.entries(studentData.module || {}).forEach(([moduleId, module]) => {
+                if (!modulesData[moduleId]) {
+                  modulesData[moduleId] = module.title || `Module ${moduleId}`;
+                }
+              });
             });
-          });
-          setStudents(studentList);
-        }
-      }).catch((error) => {
-        console.error('Error fetching students: ', error);
-      });
+
+            const sortedModules = Object.entries(modulesData)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([id, title]) => ({ id, title }));
+
+            setStudents(studentList);
+            setModules(sortedModules);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching section data:', error);
+        });
     }
   }, [selectedSection]);
 
-  const startModuleIndex = page * modulesPerPage;
-  const endModuleIndex = Math.min(startModuleIndex + modulesPerPage, totalModules);
+  const ModuleSubTable = ({ module, student }) => {
+    const [open, setOpen] = useState(false);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    // Ensure we're accessing the correct scores for the specific student
+    const studentScores = student.grades.find((grade) => grade.id === module.id)?.scores || {};
+
+    // Map submodule details dynamically
+    const submoduleDetails = Object.entries(studentScores).map(([uid, scoreData]) => {
+      const subcollectionName = Object.keys(scoreData || {})[0];
+      const submoduleInfo = scoreData[subcollectionName] || {};
+
+      return {
+        uid,
+        subcollectionName,
+        title: submoduleInfo?.name || module.title || "Unnamed Module",
+        score: submoduleInfo?.score || 0,
+      };
+    });
+
+    // Calculate overall score for this module based on submodule details
+    const overallScore = submoduleDetails.length
+      ? Math.round(submoduleDetails.reduce((sum, sub) => sum + sub.score, 0) / submoduleDetails.length)
+      : 0;
+
+    return (
+      <>
+        <TableRow>
+          <TableCell colSpan={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>{module.title}</span>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ position: 'relative', display: 'inline-flex', marginRight: 2 }}>
+                  <CircularProgress
+                    variant="determinate"
+                    value={overallScore}
+                    size={30}
+                    thickness={4}
+                    sx={{
+                      color: overallScore >= 75 ? 'green' : overallScore >= 50 ? 'orange' : 'red',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      fontSize: '0.6rem',
+                    }}
+                  >
+                    {`${overallScore}%`}
+                  </Box>
+                </Box>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => setOpen(!open)}
+                >
+                  {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                </IconButton>
+              </Box>
+            </Box>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell colSpan={2}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Table size="small" aria-label="submodule details">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell><strong>Submodule Details</strong></TableCell>
+                      <TableCell align="right"><strong>Score</strong></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {submoduleDetails.map((detail) => (
+                      <TableRow key={`${detail.uid}-${detail.subcollectionName}`}>
+                        <TableCell>
+                          <Box>
+                            <div>{detail.subcollectionName}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'gray' }}></div>
+                          </Box>
+                        </TableCell>
+                        <TableCell align="right">{`${detail.score}/${detail.score}`}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
+
+  const StudentRow = ({ student }) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <TableRow>
+          <TableCell
+            colSpan={2}
+            sx={{
+              fontSize: isXs ? '0.8rem' : '1rem',
+              fontWeight: 'bold',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <span>{student.name}</span>
+            <IconButton
+              aria-label="expand student row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell colSpan={2}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Table size="small" aria-label="modules for student">
+                  <TableBody>
+                    {modules.map((module) => (
+                      <ModuleSubTable key={module.id} module={module} student={student} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
   };
 
   return (
     <Box>
-      <Typography 
-        variant={isXs ? 'h6' : 'h5'} 
-        sx={{ 
-          mb: 3, 
-          fontSize: isXs ? '1rem' : '1.5rem', // Smaller font size for xs
+      <Typography
+        variant={isXs ? 'h6' : 'h5'}
+        sx={{
+          mb: 3,
+          fontSize: isXs ? '1rem' : '1.5rem',
         }}
       >
         {selectedSection?.sectionName} - Student List
       </Typography>
-
-      {/* Table container with horizontal scroll on mobile */}
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontSize: isXs ? '0.6rem' : '1rem' }}>Student Name</TableCell>
-              {Array.from({ length: modulesPerPage }, (_, idx) => {
-                const moduleIndex = startModuleIndex + idx + 1;
-                return (
-                  <TableCell key={moduleIndex} sx={{ fontSize: isXs ? '0.6rem' : '1rem' }}>
-                    {`Module ${moduleIndex}`}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
           <TableBody>
-            {students.map((student, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ fontSize: isXs ? '0.6rem' : '1rem' }}>{student.name}</TableCell>
-                {student.grades.slice(startModuleIndex, endModuleIndex).map((grade, idx) => (
-                  <TableCell key={idx} sx={{ fontSize: isXs ? '0.6rem' : '1rem' }}>
-                    {grade}% {/* Display student grades */}
-                  </TableCell>
-                ))}
-              </TableRow>
+            {students.map((student) => (
+              <StudentRow key={student.uid} student={student} />
             ))}
           </TableBody>
-
-  
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[]}
-                component="td"
-                count={totalModules} // Total modules
-                rowsPerPage={modulesPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                labelRowsPerPage="Modules per page"
-                sx={{
-                  width: '100%',
-                  display: isXs ? 'none' : 'table', // Hide pagination on mobile
-                }}
-              />
-            </TableRow>
-          </TableFooter>
         </Table>
       </TableContainer>
-
-      {/* Back to Classes button below both paginations */}
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Button
           variant="outlined"
@@ -128,7 +247,7 @@ const StudentList = ({ selectedSection, onBack }) => {
             borderColor: 'var(--pri)',
             '&:hover': { backgroundColor: 'rgba(255, 105, 185, 0.1)' },
             [theme.breakpoints.down('sm')]: {
-              fontSize: '0.8rem', // Adjust button text size for mobile
+              fontSize: '0.8rem',
               padding: '8px 16px',
             },
           }}
