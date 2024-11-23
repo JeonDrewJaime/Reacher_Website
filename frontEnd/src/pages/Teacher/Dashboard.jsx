@@ -158,7 +158,7 @@ const Dashboard = () => {
                 ml: {xs:'30px', sm:'30px', md:'50px', lg:'75px'}
               }}
             >
-              Welcome, Admin!
+              Welcome to Dashboard!
             </Typography>
 
             <Typography

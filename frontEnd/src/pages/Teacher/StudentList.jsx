@@ -17,6 +17,7 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { ref, get } from 'firebase/database';
+import { LinearProgress } from '@mui/material'; 
 import { db } from '../../../firebase'; // Import your Firebase config
 
 const StudentList = ({ selectedSection, onBack }) => {
@@ -78,15 +79,13 @@ const StudentList = ({ selectedSection, onBack }) => {
 
   const ModuleSubTable = ({ module, student }) => {
     const [open, setOpen] = useState(false);
-
-    // Ensure we're accessing the correct scores for the specific student
+  
     const studentScores = student.grades.find((grade) => grade.id === module.id)?.scores || {};
-
-    // Map submodule details dynamically
+  
     const submoduleDetails = Object.entries(studentScores).map(([uid, scoreData]) => {
       const subcollectionName = Object.keys(scoreData || {})[0];
       const submoduleInfo = scoreData[subcollectionName] || {};
-
+  
       return {
         uid,
         subcollectionName,
@@ -94,40 +93,34 @@ const StudentList = ({ selectedSection, onBack }) => {
         score: submoduleInfo?.score || 0,
       };
     });
-
-    // Calculate overall score for this module based on submodule details
+  
     const overallScore = submoduleDetails.length
       ? Math.round(submoduleDetails.reduce((sum, sub) => sum + sub.score, 0) / submoduleDetails.length)
       : 0;
-
+  
     return (
       <>
         <TableRow>
           <TableCell colSpan={2}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{module.title}</span>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ position: 'relative', display: 'inline-flex', marginRight: 2 }}>
-                  <CircularProgress
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: 300 }}>
+                <Box sx={{ flexGrow: 1, mr: 2 }}>
+                  <Typography variant="body2" align="center">
+                    {`${overallScore}%`}
+                  </Typography>
+                  <LinearProgress
                     variant="determinate"
                     value={overallScore}
-                    size={30}
-                    thickness={4}
                     sx={{
-                      color: overallScore >= 75 ? 'green' : overallScore >= 50 ? 'orange' : 'red',
+                      height: 10,
+                      borderRadius: 5,
+                      backgroundColor: 'rgba(200, 200, 200, 0.5)',
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: `var(--pri)`,
+                      },
                     }}
                   />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      fontSize: '0.6rem',
-                    }}
-                  >
-                    {`${overallScore}%`}
-                  </Box>
                 </Box>
                 <IconButton
                   aria-label="expand row"
@@ -172,6 +165,7 @@ const StudentList = ({ selectedSection, onBack }) => {
       </>
     );
   };
+  
 
   const StudentRow = ({ student }) => {
     const [open, setOpen] = useState(false);
